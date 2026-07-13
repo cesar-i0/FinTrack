@@ -1,6 +1,7 @@
 package br.org.irede.fintrack;
 import br.org.irede.fintrack.controller.FinTrack;
 import br.org.irede.fintrack.model.Transacao;
+import br.org.irede.fintrack.model.TransacaoMensal;
 import br.org.irede.fintrack.utils.TratamentoDeDados;
 
 import java.time.LocalDate;
@@ -32,40 +33,43 @@ public class Main {
             scanner.nextLine();
             switch (opcao){
                 case 1:
-                    System.out.println("Digite a descrição: ");
+                    System.out.print("Digite a descrição: ");
                     String descricao = trata.leituraString();
-                    System.out.println("Digite o valor: ");
+                    System.out.print("Digite o valor: ");
                     double valor = trata.leituraDouble();
-                    System.out.println("Digite a data: ");
+                    System.out.print("Digite a data: ");
                     LocalDate data = trata.leituraData();
-                    System.out.println("Digite 'S' se for uma receita, caso contrário 'N': ");
+                    System.out.print("Digite 'S' se for uma receita, caso contrário 'N': ");
                     char receita = trata.leituraChar();
-                    Transacao nova = new Transacao(descricao,valor,data,(receita == 'S'));
-                    gerenciador.adcionar(nova);
+                    System.out.print("Digite 'S' se for mensal, caso contrário 'N': ");
+                    char mensal = trata.leituraChar();
+                    Transacao nova;
+                    if(mensal == 'S'){
+                        String tipo = trata.tipoTransacao();
+                        nova = new TransacaoMensal(descricao,valor,data,(receita == 'S'),tipo);
+                    }else{
+                        nova = new Transacao(descricao,valor,data,(receita == 'S'));
+                    }
+                    gerenciador.adcionarTransacao(nova);
                     break;
                 case 2:
-                    gerenciador.listar();
+                    gerenciador.listarTransacoes();
                     break;
                 case 3:
-                    System.out.println("O saldo é: " + gerenciador.calcularSaldo());
+                    System.out.println("O saldo é: " + gerenciador.calcularSaldoTotal());
                     break;
                 case 4:
-                    try{
-                        System.out.println("Digite o número da transação que deseja apagar: ");
-                        index = scanner.nextInt();
-                        gerenciador.remover(index);
-                    }catch (InputMismatchException e){
-                        System.out.println("Erro: você inseriu uma entrada inválida!");
-                    }
+                    gerenciador.listarTransacoes();
+                    System.out.println("Digite o número da transação que deseja apagar: ");
+                    index = trata.leituraInt();
+                    gerenciador.remover(index);
                     break;
                 case 5:
-                    try{
-                        System.out.println("Digite o número da transação que deseja encontrar: ");
-                        index = scanner.nextInt();
-                        Transacao a = gerenciador.buscar(index);
-                        System.out.println(index + " : " + a.getDescricao() + " | " + a.getValor() + " | " + (a.getReceita() ? "Receita" : "Despesa"));
-                    }catch (InputMismatchException e){
-                        System.out.println("Erro: você inseriu uma entrada inválida!");
+                    System.out.println("Digite o número da transação que deseja encontrar: ");
+                    index = trata.leituraInt();
+                    Transacao a = gerenciador.buscar(index);
+                    if(a != null){
+                        System.out.println(index + " : " + a.toString());
                     }
                     break;
                 case 6:

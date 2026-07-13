@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class FinTrack {
     private ArrayList<Transacao> trasacoes = new ArrayList<Transacao>();
 
-    public void adcionar(Transacao a){
+    public void adcionarTransacao(Transacao a){
         trasacoes.add(a);
     }
 
@@ -22,19 +22,19 @@ public class FinTrack {
         try{
             a = trasacoes.get(index);
         }catch (IndexOutOfBoundsException e){
-            System.out.println("Erro: o índice informado ultrapassa o tamanho existente!");
+            System.out.println("Erro: transação não encontrada!");
         }
         return a;
     }
 
-    public void listar(){
+    public void listarTransacoes(){
         int index = 0;
         for(Transacao a : trasacoes){
-            System.out.println(index + " : " + a.getDescricao() + " | " + a.getValor() + " | " + (a.getReceita() ? "Receita" : "Despesa"));
+            System.out.println(index + " : " + a.toString());
         }
     }
 
-    public double calcularSaldo(){
+    public double calcularSaldoTotal(){
         double aux = 0;
         for(Transacao a : trasacoes){
             if(a.getReceita()){
@@ -45,4 +45,5 @@ public class FinTrack {
         }
         return aux;
     }
+
 }

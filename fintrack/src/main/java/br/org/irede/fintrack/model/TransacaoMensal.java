@@ -16,4 +16,10 @@ public class TransacaoMensal extends Transacao{
     public String getTipoDeTransacao(){
         return tipoDeTransacao;
     }
+
+    @Override
+    public String toString(){
+        return super.toString() + " | " + tipoDeTransacao;
+    }
+
 }
