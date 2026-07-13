@@ -1,10 +1,12 @@
 package br.org.irede.fintrack.model;
 
+import java.time.LocalDate;
+
 public class TransacaoMensal extends Transacao{
     private String tipoDeTransacao;
 
-    public TransacaoMensal(String descricao, double valor, String dataTransacao, boolean receita, String tipoDeTransacao){
-        super(descricao,valor, dataTransacao, receita);
+    public TransacaoMensal(String descricao, double valor, LocalDate data, boolean ehReceita, String tipoDeTransacao){
+        super(descricao,valor, data, ehReceita);
         this.tipoDeTransacao = tipoDeTransacao;
     }
 

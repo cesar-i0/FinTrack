@@ -1,12 +1,16 @@
 package br.org.irede.fintrack;
 import br.org.irede.fintrack.controller.FinTrack;
 import br.org.irede.fintrack.model.Transacao;
+import br.org.irede.fintrack.utils.TratamentoDeDados;
+
+import java.time.LocalDate;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         FinTrack gerenciador =  new FinTrack();
+        TratamentoDeDados trata = new TratamentoDeDados();
         boolean condicao = true;
         int opcao = 0, index = 0;
         while(condicao){
@@ -28,25 +32,16 @@ public class Main {
             scanner.nextLine();
             switch (opcao){
                 case 1:
-                    String descricao;
-                    double valor;
-                    String data;
-                    char receita;
-                    try{
-                        System.out.println("Digite a descrição: ");
-                        descricao = scanner.nextLine();
-                        System.out.println("Digite o valor: ");
-                        valor = scanner.nextDouble();
-                        scanner.nextLine();
-                        System.out.println("Digite a data: ");
-                        data = scanner.nextLine();
-                        System.out.println("Digite 'S' se for uma receita, caso contrário 'N': ");
-                        receita = scanner.next().charAt(0);
-                        Transacao nova = new Transacao(descricao,valor,data,(receita == 'S'));
-                        gerenciador.adcionar(nova);
-                    }catch (InputMismatchException e){
-                        System.out.println("Erro: você inseriu uma entrada inválida!");
-                    }
+                    System.out.println("Digite a descrição: ");
+                    String descricao = trata.leituraString();
+                    System.out.println("Digite o valor: ");
+                    double valor = trata.leituraDouble();
+                    System.out.println("Digite a data: ");
+                    LocalDate data = trata.leituraData();
+                    System.out.println("Digite 'S' se for uma receita, caso contrário 'N': ");
+                    char receita = trata.leituraChar();
+                    Transacao nova = new Transacao(descricao,valor,data,(receita == 'S'));
+                    gerenciador.adcionar(nova);
                     break;
                 case 2:
                     gerenciador.listar();

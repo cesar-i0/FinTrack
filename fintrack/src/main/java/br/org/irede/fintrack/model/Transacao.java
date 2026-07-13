@@ -1,16 +1,18 @@
 package br.org.irede.fintrack.model;
 
+import java.time.LocalDate;
+
 public class Transacao {
     private String descricao;
     private double valor;
-    private String dataTransacao;
-    private boolean receita;
+    private LocalDate data;
+    private boolean ehReceita;
 
-    public Transacao(String descricao, double valor, String dataTransacao, boolean receita){
+    public Transacao(String descricao, double valor, LocalDate data, boolean ehReceita){
         this.descricao = descricao;
         this.valor = valor;
-        this.dataTransacao = dataTransacao;
-        this.receita = receita;
+        this.data = this.data;
+        this.ehReceita = ehReceita;
     }
 
     public void setValor(double valor){
@@ -21,20 +23,20 @@ public class Transacao {
         return valor;
     }
 
-    public void setDataTransacao(String dataTransacao){
-        this.dataTransacao = dataTransacao;
+    public void setDataTransacao(LocalDate dataTransacao){
+        this.data = data;
     }
 
-    public String getDataTransacao(){
-        return dataTransacao;
+    public LocalDate getData(){
+        return data;
     }
 
     public void setReceita(boolean receita){
-        this.receita = receita;
+        this.ehReceita = receita;
     }
 
     public boolean getReceita(){
-        return receita;
+        return ehReceita;
     }
 
     public void setDescricao(String descricao){
