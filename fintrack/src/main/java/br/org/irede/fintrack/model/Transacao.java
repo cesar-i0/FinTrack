@@ -23,7 +23,7 @@ public class Transacao {
         return valor;
     }
 
-    public void setDataTransacao(LocalDate dataTransacao){
+    public void setDataTransacao(LocalDate data){
         this.data = data;
     }
 
@@ -31,8 +31,8 @@ public class Transacao {
         return data;
     }
 
-    public void setReceita(boolean receita){
-        this.ehReceita = receita;
+    public void setReceita(boolean ehReceita){
+        this.ehReceita = ehReceita;
     }
 
     public boolean getReceita(){
