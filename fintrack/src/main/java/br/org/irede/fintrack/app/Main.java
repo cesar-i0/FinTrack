@@ -1,4 +1,4 @@
-package br.org.irede.fintrack;
+package br.org.irede.fintrack.app;
 import br.org.irede.fintrack.controller.FinTrack;
 import br.org.irede.fintrack.model.Transacao;
 import br.org.irede.fintrack.model.TransacaoMensal;
@@ -11,7 +11,7 @@ public class Main {
         FinTrack gerenciador =  new FinTrack();
         TratamentoDeDados trata = new TratamentoDeDados();
         boolean condicao = true;
-        int opcao = 0, index = 0;
+        int opcao, index;
         while(condicao){
             System.out.println("""
             ===== FINTRACK - SEU CONTROLE FINANCEIRO =====

@@ -11,7 +11,7 @@ public class Transacao {
     public Transacao(String descricao, double valor, LocalDate data, boolean ehReceita){
         this.descricao = descricao;
         this.valor = valor;
-        this.data = this.data;
+        this.data = data;
         this.ehReceita = ehReceita;
     }
 
