@@ -5,7 +5,9 @@ import br.org.irede.fintrack.model.TransacaoMensal;
 import br.org.irede.fintrack.utils.TratamentoDeDados;
 import java.time.LocalDate;
 
-
+/**
+ * @author cesar.i0
+ */
 public class Main {
     public static void main(String[] args) {
         FinTrack gerenciador =  new FinTrack();
