@@ -1,27 +1,39 @@
 # FinTrack
 
-FinTrack é uma aplicação Java em linha de comando para controle financeiro. O sistema permite cadastrar transações, listar os lançamentos, consultar o saldo atual, remover itens e buscar transações por índice.
+FinTrack é uma aplicação Java em modo console para controle financeiro. O projeto foi desenvolvido com foco nos conteúdos do módulo inicial: Programação Orientada a Objetos, estruturas de controle, listas com ArrayList, tratamento de exceções e organização por pacotes.
+
+## Objetivo
+
+Permitir o cadastro e a consulta de transações financeiras, separando receitas e despesas, com suporte a lançamentos mensais e cálculo do saldo atual.
+
+## Requisitos atendidos
+
+- Programação Orientada a Objetos, com classes de domínio e herança.
+- Estruturas de controle, com menu interativo, repetição e seleção de opções.
+- Listas, usando ArrayList para armazenar as transações em memória.
+- Tratamento de exceções, com validação de entrada do usuário e tratamento de erros comuns.
+- Organização do código em pacotes, com separação entre app, controller, model e utils.
+
+## Estrutura do projeto
+
+- `fintrack/src/main/java/br/org/irede/fintrack/app/Main.java`: ponto de entrada da aplicação.
+- `fintrack/src/main/java/br/org/irede/fintrack/controller/FinTrack.java`: gerenciamento da lista de transações.
+- `fintrack/src/main/java/br/org/irede/fintrack/model/Transacao.java`: modelo base de transação.
+- `fintrack/src/main/java/br/org/irede/fintrack/model/TransacaoMensal.java`: extensão para transações mensais.
+- `fintrack/src/main/java/br/org/irede/fintrack/utils/TratamentoDeDados.java`: leitura e validação de dados no console.
+- `fintrack/src/main/java/br/org/irede/fintrack/utils/Formatador.java`: conversão de datas.
 
 ## Funcionalidades
 
 - Adicionar novas transações com descrição, valor, data e tipo.
 - Registrar receitas e despesas.
-- Cadastrar transações mensais com uma categoria pré-definida.
+- Cadastrar transações mensais com categoria pré-definida.
 - Listar todas as transações cadastradas.
 - Exibir o saldo total acumulado.
 - Remover uma transação pelo índice.
 - Buscar uma transação pelo índice.
 
-## Estrutura do projeto
-
-- `src/main/java/br/org/irede/fintrack/Main.java`: ponto de entrada da aplicação.
-- `src/main/java/br/org/irede/fintrack/controller/FinTrack.java`: gerenciamento da lista de transações.
-- `src/main/java/br/org/irede/fintrack/model/Transacao.java`: modelo base de transação.
-- `src/main/java/br/org/irede/fintrack/model/TransacaoMensal.java`: extensão para transações mensais.
-- `src/main/java/br/org/irede/fintrack/utils/TratamentoDeDados.java`: leitura e validação de dados no console.
-- `src/main/java/br/org/irede/fintrack/utils/Formatador.java`: conversão de datas.
-
-## Uso da aplicação
+## Execução
 
 Ao iniciar, o sistema exibe um menu com as opções:
 
