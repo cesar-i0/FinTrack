@@ -3,10 +3,8 @@ import br.org.irede.fintrack.controller.FinTrack;
 import br.org.irede.fintrack.model.Transacao;
 import br.org.irede.fintrack.model.TransacaoMensal;
 import br.org.irede.fintrack.utils.TratamentoDeDados;
-
 import java.time.LocalDate;
-import java.util.InputMismatchException;
-import java.util.Scanner;
+
 
 public class Main {
     public static void main(String[] args) {
@@ -24,13 +22,7 @@ public class Main {
             5. Buscar transação
             6. Sair
             ==============================================""");
-            Scanner scanner = new Scanner(System.in);
-            try{
-                opcao = scanner.nextInt();
-            }catch (InputMismatchException e){
-                System.out.println("Erro: você inseriu uma entrada inválida!");
-            }
-            scanner.nextLine();
+            opcao = trata.leituraInt();
             switch (opcao){
                 case 1:
                     System.out.print("Digite a descrição: ");
@@ -46,9 +38,9 @@ public class Main {
                     Transacao nova;
                     if(mensal == 'S'){
                         String tipo = trata.tipoTransacao();
-                        nova = new TransacaoMensal(descricao,valor,data,(receita == 'S'),tipo);
+                        nova = new TransacaoMensal(descricao,(receita == 'S' ? valor : -valor),data,(receita == 'S'),tipo);
                     }else{
-                        nova = new Transacao(descricao,valor,data,(receita == 'S'));
+                        nova = new Transacao(descricao,(receita == 'S' ? valor : -valor),data,(receita == 'S'));
                     }
                     gerenciador.adcionarTransacao(nova);
                     break;

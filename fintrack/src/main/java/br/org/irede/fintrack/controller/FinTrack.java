@@ -31,17 +31,14 @@ public class FinTrack {
         int index = 0;
         for(Transacao a : trasacoes){
             System.out.println(index + " : " + a.toString());
+            index++;
         }
     }
 
     public double calcularSaldoTotal(){
         double aux = 0;
         for(Transacao a : trasacoes){
-            if(a.getReceita()){
-                aux += a.getValor();
-            }else{
-                aux -= a.getValor();
-            }
+            aux += a.getValor();
         }
         return aux;
     }

@@ -10,7 +10,7 @@ public class Formatador {
         try{
             return LocalDate.parse(data,formato);
         }catch (DateTimeParseException e){
-            System.out.println("Erro: formatação com erro para a data '" + data + "'");
+            System.out.println("Erro: formatação com erro para a data");
             return null;
         }
     }
