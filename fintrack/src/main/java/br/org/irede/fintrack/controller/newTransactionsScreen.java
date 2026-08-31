@@ -1,6 +1,5 @@
 package br.org.irede.fintrack.controller;
 import br.org.irede.fintrack.app.Main;
-import br.org.irede.fintrack.dao.TransacaoDAO;
 import javafx.fxml.FXML;
 import javafx.scene.input.MouseEvent;
 import java.io.IOException;
@@ -14,14 +13,7 @@ import br.org.irede.fintrack.model.Transacao;
 import br.org.irede.fintrack.utils.Formatador;
 import javafx.scene.control.Button;
 
-public class NewTransaction {
-
-    @FXML
-    private void switchToPrimary(MouseEvent event) throws IOException {
-        if(event.getButton() == javafx.scene.input.MouseButton.PRIMARY) {
-            Main.setRoot("PrimaryScreen");
-        }
-    }
+public class newTransactionsScreen extends FinTrack{
 
     @FXML
     private TextField txtDesc;
@@ -38,7 +30,6 @@ public class NewTransaction {
     @FXML
     private Button btnSave;
 
-    private final TransacaoDAO transacaoDAO = new TransacaoDAO();
 
     @FXML
     public void initialize() {

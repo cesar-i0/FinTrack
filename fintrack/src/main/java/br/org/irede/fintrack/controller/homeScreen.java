@@ -4,32 +4,15 @@ import br.org.irede.fintrack.model.Transacao;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import br.org.irede.fintrack.app.Main;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
-import java.io.IOException;
 import javafx.scene.control.Label;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
-public class PrimaryScreen {
-
-    @FXML
-    private void switchToNewTransaction(MouseEvent event) throws IOException {
-        if(event.getButton() == javafx.scene.input.MouseButton.PRIMARY) {
-            Main.setRoot("NewTransaction");
-        }
-    }
-
-    @FXML
-    private void switchToReport(MouseEvent event) throws IOException {
-        if(event.getButton() == javafx.scene.input.MouseButton.PRIMARY) {
-            Main.setRoot("Report");
-        }
-    }
+public class homeScreen extends FinTrack {
 
     @FXML
     private Label lblSaldo;

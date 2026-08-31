@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="400.0" spacing="15.0" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.org.irede.fintrack.controller.NewTransaction">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="400.0" spacing="15.0" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.org.irede.fintrack.controller.newTransactionsScreen">
    <children>
       <Label styleClass="title-header" text="Cadastrar Nova Transação" />
       <GridPane hgap="10.0" vgap="15.0">
@@ -39,7 +39,7 @@
       </GridPane>
       <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
          <children>
-            <Button mnemonicParsing="false" onMouseClicked="#switchToPrimary" styleClass="btn-secondary" text="Cancelar" />
+            <Button mnemonicParsing="false" onMouseClicked="#switchToHome" styleClass="btn-secondary" text="Cancelar" />
             <Button mnemonicParsing="false" onMouseClicked="#saveTransaction" styleClass="btn-primary" text="Adicionar" />
          </children>
       </HBox>

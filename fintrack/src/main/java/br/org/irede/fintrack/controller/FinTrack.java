@@ -1,46 +1,42 @@
 package br.org.irede.fintrack.controller;
-import br.org.irede.fintrack.model.Transacao;
-import java.util.ArrayList;
+import br.org.irede.fintrack.app.Main;
+import br.org.irede.fintrack.dao.TransacaoDAO;
+import javafx.fxml.FXML;
+import javafx.scene.input.MouseEvent;
+import java.io.IOException;
+import br.org.irede.fintrack.app.Main;
 
-public class FinTrack {
-    private ArrayList<Transacao> trasacoes = new ArrayList<Transacao>();
 
-    public void adcionarTransacao(Transacao a){
-        trasacoes.add(a);
-    }
+public abstract class FinTrack {
 
-    public void remover(int index){
-        try{
-            trasacoes.remove(index);
-        }catch (IndexOutOfBoundsException e){
-            System.out.println("Erro: o índice informado não existe!");
+    protected final TransacaoDAO transacaoDAO = new TransacaoDAO();
+
+    @FXML
+    protected void switchToHome(MouseEvent event) throws IOException {
+        if(event.getButton() == javafx.scene.input.MouseButton.PRIMARY) {
+            Main.setRoot("homeScreen");
         }
     }
 
-    public Transacao buscar(int index){
-        Transacao a = null;
-        try{
-            a = trasacoes.get(index);
-        }catch (IndexOutOfBoundsException e){
-            System.out.println("Erro: transação não encontrada!");
-        }
-        return a;
-    }
-
-    public void listarTransacoes(){
-        int index = 0;
-        for(Transacao a : trasacoes){
-            System.out.println(index + " : " + a.toString());
-            index++;
+    @FXML
+    protected void switchToTransactions(MouseEvent event) throws IOException {
+        if(event.getButton() == javafx.scene.input.MouseButton.PRIMARY) {
+            Main.setRoot("transactionsScreen");
         }
     }
 
-    public double calcularSaldoTotal(){
-        double aux = 0;
-        for(Transacao a : trasacoes){
-            aux += a.getValor();
+    @FXML
+    protected void switchToReport(MouseEvent event) throws IOException {
+        if(event.getButton() == javafx.scene.input.MouseButton.PRIMARY) {
+            Main.setRoot("reportScreen");
         }
-        return aux;
+    }
+
+    @FXML
+    protected void switchToNewTransactions(MouseEvent event) throws IOException {
+        if(event.getButton() == javafx.scene.input.MouseButton.PRIMARY) {
+            Main.setRoot("newTransactionsScreen");
+        }
     }
 
 }
