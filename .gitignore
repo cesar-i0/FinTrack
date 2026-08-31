@@ -1,0 +1,5 @@
+fintrack/target/
+fintrack/fintrack.db
+**/.idea/
+**/*.db
+**/target/
