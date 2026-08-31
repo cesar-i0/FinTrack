@@ -1,0 +1,15 @@
+/home/cesar.i0/Área de trabalho/FinTrack/fintrack/src/main/java/br/org/irede/fintrack/app/Main.java
+/home/cesar.i0/Área de trabalho/FinTrack/fintrack/src/main/java/br/org/irede/fintrack/controller/FinTrack.java
+/home/cesar.i0/Área de trabalho/FinTrack/fintrack/src/main/java/br/org/irede/fintrack/controller/NewTransaction.java
+/home/cesar.i0/Área de trabalho/FinTrack/fintrack/src/main/java/br/org/irede/fintrack/controller/PrimaryScreen.java
+/home/cesar.i0/Área de trabalho/FinTrack/fintrack/src/main/java/br/org/irede/fintrack/controller/Report.java
+/home/cesar.i0/Área de trabalho/FinTrack/fintrack/src/main/java/br/org/irede/fintrack/dao/TransacaoDAO.java
+/home/cesar.i0/Área de trabalho/FinTrack/fintrack/src/main/java/br/org/irede/fintrack/model/Transacao.java
+/home/cesar.i0/Área de trabalho/FinTrack/fintrack/src/main/java/br/org/irede/fintrack/model/TransacaoMensal.java
+/home/cesar.i0/Área de trabalho/FinTrack/fintrack/src/main/java/br/org/irede/fintrack/model/TransacaoTest.java
+/home/cesar.i0/Área de trabalho/FinTrack/fintrack/src/main/java/br/org/irede/fintrack/repository/GenericRepository.java
+/home/cesar.i0/Área de trabalho/FinTrack/fintrack/src/main/java/br/org/irede/fintrack/repository/GenericRepositoryTest.java
+/home/cesar.i0/Área de trabalho/FinTrack/fintrack/src/main/java/br/org/irede/fintrack/utils/DataBaseConnection.java
+/home/cesar.i0/Área de trabalho/FinTrack/fintrack/src/main/java/br/org/irede/fintrack/utils/Formatador.java
+/home/cesar.i0/Área de trabalho/FinTrack/fintrack/src/main/java/br/org/irede/fintrack/utils/TratamentoDeDados.java
+/home/cesar.i0/Área de trabalho/FinTrack/fintrack/src/main/java/module-info.java
