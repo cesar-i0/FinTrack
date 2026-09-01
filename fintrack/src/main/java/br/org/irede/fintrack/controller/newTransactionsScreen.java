@@ -25,10 +25,17 @@ public class newTransactionsScreen extends FinTrack{
     private ComboBox<String> cbType;
 
     @FXML
+    private ComboBox<String> cbCategory;
+
+    @FXML
     private DatePicker dpDate;
 
     @FXML
     private Button btnSave;
+
+    @FXML
+    private Button btnCancel;
+
 
 
     @FXML
@@ -45,11 +52,12 @@ public class newTransactionsScreen extends FinTrack{
             Double valor = Formatador.conversorDouble(txtVal.getText());
             Boolean isR = "Receita".equals(cbType.getValue());
             LocalDate localDate = dpDate.getValue();
+            String cat = cbCategory.getValue();
 
-            Transacao t = new Transacao(descricao, valor, localDate, isR);
+            Transacao t = new Transacao(descricao, valor, localDate, isR, cat);
             transacaoDAO.save(t);
 
-            Main.setRoot("PrimaryScreen");
+            Main.setRoot("homeScreen");
 
         } catch (SQLException e) {
             System.err.println("Erro ao salvar no banco de dados: " + e.getMessage());

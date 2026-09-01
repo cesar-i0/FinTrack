@@ -3,19 +3,21 @@ package br.org.irede.fintrack.model;
 import java.time.LocalDate;
 
 public class Transacao {
+    private Integer idTransacao;
     private String descricao;
     private Double valor;
     private LocalDate data;
     private Boolean ehReceita;
-    private Integer idTransacao;
+    private String categoria;
 
     public Transacao() {}
 
-    public Transacao(String descricao, Double valor, LocalDate data, Boolean ehReceita){
+    public Transacao(String descricao, Double valor, LocalDate data, Boolean ehReceita, String categoria) {
         this.descricao = descricao;
         this.valor = valor;
         this.data = data;
         this.ehReceita = ehReceita;
+        this.categoria = categoria;
     }
 
     public void setValor(Double valor){
@@ -63,6 +65,14 @@ public class Transacao {
             return "";
         }
         return this.ehReceita ? "Receita" : "Despesa";
+    }
+
+    public void setCategoria(String categoria){
+        this.categoria = categoria;
+    }
+
+    public String getCategoria(){
+        return categoria;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package br.org.irede.fintrack.dao;
 import br.org.irede.fintrack.model.Transacao;
+import br.org.irede.fintrack.model.TransacaoMensal;
 import br.org.irede.fintrack.utils.DataBaseConnection;
 import java.sql.*;
 import java.time.LocalDate;
@@ -25,7 +26,7 @@ public class TransacaoDAO {
 
     // CREATE
     public void save(Transacao t) throws SQLException {
-        String sql = "INSERT INTO transactions (transaction_description, transaction_value, transaction_type, transaction_data) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO transactions (description, t_value, t_type, t_data, category) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -42,6 +43,28 @@ public class TransacaoDAO {
             }
         }
     }
+    public void saveMensal(TransacaoMensal t) throws SQLException {
+        String sql = "INSERT INTO monthly_transactions (t_id, ini_date, end_date) VALUES (?, ?, ?) ";
+        connection.setAutoCommit(false);
+        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            save(t);
+            stmt.setInt(1, t.getId());
+            stmt.setString(2,Formatador.conversorString(t.getDataInicial()));
+            stmt.setString(3,Formatador.conversorString(t.getDataFinal()));
+            stmt.executeUpdate();
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    t.setId(rs.getInt(1));
+                }
+            }
+            connection.commit();
+        }catch (SQLException e){
+            connection.rollback();
+            throw e;
+        }finally {
+            connection.setAutoCommit(true);
+        }
+    }
 
     // READ
     public List<Transacao> findAll() throws SQLException {
@@ -56,7 +79,7 @@ public class TransacaoDAO {
     }
 
     public Transacao findById(Integer id) throws SQLException {
-        String sql = "SELECT * FROM transactions WHERE transation_id = ?";
+        String sql = "SELECT * FROM transactions WHERE t_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -70,20 +93,21 @@ public class TransacaoDAO {
 
     // UPDATE
     public void update(Transacao t) throws SQLException {
-        String sql = "UPDATE transactions SET transaction_description = ?, transaction_value = ?, transaction_type = ?, transaction_data = ? WHERE id_transaction = ?";
+        String sql = "UPDATE transactions SET description = ?, t_value = ?, t_type = ?, t_data = ?, category = ? WHERE id_t = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, t.getDescricao());
             stmt.setDouble(2, t.getValor());
             stmt.setString(3, (t.getReceita() ? "Receita" : "Despesa"));
             stmt.setString(4, (Formatador.conversorString(t.getData())));
-            stmt.setInt(5, t.getId());
+            stmt.setString(5, (t.getCategoria()));
+            stmt.setInt(6, t.getId());
             stmt.executeUpdate();
         }
     }
 
     // DELETE
     public void delete(Long id) throws SQLException {
-        String sql = "DELETE FROM transactions WHERE id_transaction = ?";
+        String sql = "DELETE FROM transactions WHERE t_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, id);
             stmt.executeUpdate();
@@ -93,7 +117,7 @@ public class TransacaoDAO {
 
     public Double getTotalPorTipo(Boolean isReceita) throws SQLException {
         String tipo = isReceita ? "Receita" : "Despesa";
-        String sql = "SELECT SUM(transaction_value) FROM transactions WHERE transaction_type = ?";
+        String sql = "SELECT SUM(t_value) FROM transactions WHERE t_type = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, tipo);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -106,18 +130,19 @@ public class TransacaoDAO {
     }
 
     public Transacao instanciarTransacao(ResultSet rs) throws SQLException {
-        Integer id = rs.getInt("transation_id");
-        String desc =  rs.getString("transaction_description");
-        Double val = rs.getDouble("transaction_value");
-        Boolean isR = "Receita".equalsIgnoreCase(rs.getString("transaction_type"));
-        LocalDate data = Formatador.conversorData(rs.getString("transaction_data"));
-        Transacao t = new Transacao(desc, val, data, isR);
+        Integer id = rs.getInt("t_id");
+        String desc =  rs.getString("description");
+        Double val = rs.getDouble("t_value");
+        Boolean isR = "Receita".equalsIgnoreCase(rs.getString("t_type"));
+        LocalDate data = Formatador.conversorData(rs.getString("t_data"));
+        String cat = rs.getString("category");
+        Transacao t = new Transacao(desc, val, data, isR, cat);
         t.setId(id);
         return t;
     }
 
     public List<Transacao> findByData(LocalDate data) throws SQLException {
-        String sql = "SELECT * FROM transactions WHERE transaction_data = ? ORDER BY transation_id DESC";
+        String sql = "SELECT * FROM transactions WHERE t_data = ? ORDER BY t_id DESC";
         List<Transacao> lista = new ArrayList<>();
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, Formatador.conversorString(data));

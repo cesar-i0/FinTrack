@@ -17,11 +17,20 @@ public class DataBaseConnection {
         try(Connection conn = makeConnection(); Statement stmt = conn.createStatement()){
             stmt.execute("""
                 CREATE TABLE IF NOT EXISTS transactions(
-                    transation_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    transaction_description TEXT NOT NULL,
-                    transaction_value DECIMAL(10,2) NOT NULL,
-                    transaction_type TEXT NOT NULL,
-                    transaction_data TEXT NOT NULL
+                    t_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    description TEXT NOT NULL,
+                    t_value DECIMAL(10,2) NOT NULL,
+                    t_type TEXT NOT NULL,
+                    t_date TEXT NOT NULL,
+                    category TEXT NOT NULL
+                )
+            """);
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS monthly_transactions(
+                    t_id INTEGER PRIMARY KEY,
+                    ini_date TEXT NOT NULL,
+                    end_date TEXT NOT NULL,
+                    FOREIGN KEY (t_id) REFERENCES transactions(t_id)
                 )
             """);
         }catch(SQLException e){

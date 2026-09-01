@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="400.0" spacing="15.0" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.org.irede.fintrack.controller.newTransactionsScreen">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" spacing="15.0" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.org.irede.fintrack.controller.newTransactionsScreen">
    <children>
       <Label styleClass="title-header" text="Cadastrar Nova Transação" />
       <GridPane hgap="10.0" vgap="15.0">
@@ -25,6 +25,7 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
             <Label styleClass="card-title" text="Descrição" />
@@ -33,8 +34,10 @@
             <TextField fx:id="txtVal" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Label styleClass="card-title" text="Tipo" GridPane.rowIndex="2" />
             <ComboBox fx:id="cbType" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <Label styleClass="card-title" text="Data" GridPane.rowIndex="3" />
-            <DatePicker fx:id="dpDate" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Label styleClass="card-title" text="Data" GridPane.rowIndex="4" />
+            <DatePicker fx:id="dpDate" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <ComboBox fx:id="cbCategory" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Label text="Categoria" GridPane.rowIndex="3" />
          </children>
       </GridPane>
       <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
