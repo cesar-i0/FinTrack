@@ -71,7 +71,7 @@
             </VBox>
             <VBox prefHeight="125.0" prefWidth="100.0">
                <children>
-                  <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseClicked="#switchToHome" styleClass="btn-secondary" text="Página Inicial">
+                  <Button fx:id="btnHome" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#switchToHome" styleClass="btn-secondary" text="Página Inicial">
                      <VBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </VBox.margin>
@@ -79,7 +79,7 @@
                         <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                      </padding>
                   </Button>
-                  <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseClicked="#switchToTransactions" styleClass="btn-secondary" text="Transações">
+                  <Button fx:id="btnTransactions" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#switchToTransactions" styleClass="btn-secondary" text="Transações">
                      <VBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </VBox.margin>
@@ -87,7 +87,7 @@
                         <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                      </padding>
                   </Button>
-                  <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="btn-secondary" text="Relatório">
+                  <Button fx:id="btnReport" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#switchToReport" styleClass="btn-secondary" text="Relatório">
                      <VBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </VBox.margin>

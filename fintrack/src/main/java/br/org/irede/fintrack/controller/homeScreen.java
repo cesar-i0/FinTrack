@@ -1,13 +1,17 @@
 package br.org.irede.fintrack.controller;
+import br.org.irede.fintrack.app.Main;
 import br.org.irede.fintrack.dao.TransacaoDAO;
 import br.org.irede.fintrack.model.Transacao;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.Label;
+
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
@@ -23,7 +27,10 @@ public class homeScreen extends FinTrack {
     @FXML
     private Label lblSaidas;
 
-    private final TransacaoDAO transacaoDAO = new TransacaoDAO();
+    @FXML
+    private Button btnAdd;
+
+    private final TransacaoDAO teste= new TransacaoDAO();
 
     @FXML
     public void initialize() {
@@ -50,24 +57,14 @@ public class homeScreen extends FinTrack {
     }
 
     @FXML
-    private TableView<Transacao> tblTransactions;
-
-    @FXML
-    private TableColumn<Transacao, LocalDate> colDate;
-
-    @FXML
-    private TableColumn<Transacao, Double> colValue;
-
-    @FXML
-    private TableColumn<Transacao, String> colDescription;
-
-    @FXML
-    private TableColumn<Transacao, String> colType;
+    private void switchToNewTransactions() throws IOException {
+        Main.setRoot("newTransactionScreen");
+    }
 
     private void configTable(){
-        colDate.setCellValueFactory(new PropertyValueFactory<>("data"));
+        colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
         colDescription.setCellValueFactory(new PropertyValueFactory<>("descricao"));
-        colType.setCellValueFactory(new PropertyValueFactory<>("tipo"));
+        colType.setCellValueFactory(new PropertyValueFactory<>("categoria"));
         colValue.setCellValueFactory(new PropertyValueFactory<>("valor"));
     }
 

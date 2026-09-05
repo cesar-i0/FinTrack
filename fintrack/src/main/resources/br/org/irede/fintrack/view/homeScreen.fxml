@@ -30,7 +30,7 @@
             </VBox>
             <VBox prefHeight="125.0" prefWidth="100.0">
                <children>
-                  <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Página Inicial">
+                  <Button fx:id="btnHome" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#switchToHome" text="Página Inicial">
                      <VBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </VBox.margin>
@@ -38,7 +38,7 @@
                         <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                      </padding>
                   </Button>
-                  <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseClicked="#switchToTransactions" text="Transações">
+                  <Button fx:id="btnTransactions" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#switchToTransactions" text="Transações">
                      <VBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </VBox.margin>
@@ -46,7 +46,7 @@
                         <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                      </padding>
                   </Button>
-                  <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseClicked="#switchToReport" text="Relatório">
+                  <Button fx:id="btnReport" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#switchToReport" text="Relatório">
                      <VBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </VBox.margin>
@@ -115,6 +115,19 @@
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
+                        </VBox>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#switchToNewTransactions">
+                                 <graphic>
+                                    <ImageView fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/add.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                           </children>
                         </VBox>
                      </children>
                   </HBox>

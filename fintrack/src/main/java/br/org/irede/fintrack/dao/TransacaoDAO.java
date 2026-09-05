@@ -26,14 +26,14 @@ public class TransacaoDAO {
 
     // CREATE
     public void save(Transacao t) throws SQLException {
-        String sql = "INSERT INTO transactions (description, t_value, t_type, t_data, category) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO transactions (description, t_value, t_type, t_date, category) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, t.getDescricao());
             stmt.setDouble(2, t.getValor());
             stmt.setString(3, (t.getReceita() ? "Receita" : "Despesa"));
-            stmt.setString(4, (Formatador.conversorString(t.getData())));
+            stmt.setString(4, (Formatador.conversorString(t.getDate())));
             stmt.executeUpdate();
 
             try (ResultSet rs = stmt.getGeneratedKeys()) {
@@ -68,11 +68,11 @@ public class TransacaoDAO {
 
     // READ
     public List<Transacao> findAll() throws SQLException {
-        String sql = "SELECT * FROM transactions ORDER BY transation_id DESC";
+        String sql = "SELECT * FROM transactions t LEFT JOIN monthly_transactions m ON t.t_id = m.t_id ORDER BY t.t_id DESC";
         List<Transacao> lista_transacoes = new ArrayList<>();
         try (PreparedStatement stmt = connection.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
-                lista_transacoes.add(instanciarTransacao(rs));
+                lista_transacoes.add(instanciarTransacaoMesal(rs));
             }
         }
         return lista_transacoes;
@@ -93,12 +93,12 @@ public class TransacaoDAO {
 
     // UPDATE
     public void update(Transacao t) throws SQLException {
-        String sql = "UPDATE transactions SET description = ?, t_value = ?, t_type = ?, t_data = ?, category = ? WHERE id_t = ?";
+        String sql = "UPDATE transactions SET description = ?, t_value = ?, t_type = ?, t_date = ?, category = ? WHERE id_t = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, t.getDescricao());
             stmt.setDouble(2, t.getValor());
             stmt.setString(3, (t.getReceita() ? "Receita" : "Despesa"));
-            stmt.setString(4, (Formatador.conversorString(t.getData())));
+            stmt.setString(4, (Formatador.conversorString(t.getDate())));
             stmt.setString(5, (t.getCategoria()));
             stmt.setInt(6, t.getId());
             stmt.executeUpdate();
@@ -134,15 +134,29 @@ public class TransacaoDAO {
         String desc =  rs.getString("description");
         Double val = rs.getDouble("t_value");
         Boolean isR = "Receita".equalsIgnoreCase(rs.getString("t_type"));
-        LocalDate data = Formatador.conversorData(rs.getString("t_data"));
+        LocalDate data = Formatador.conversorData(rs.getString("t_date"));
         String cat = rs.getString("category");
         Transacao t = new Transacao(desc, val, data, isR, cat);
         t.setId(id);
         return t;
     }
 
+    public TransacaoMensal instanciarTransacaoMesal(ResultSet rs) throws SQLException {
+        Integer id = rs.getInt("t_id");
+        String desc =  rs.getString("description");
+        Double val = rs.getDouble("t_value");
+        Boolean isR = "Receita".equalsIgnoreCase(rs.getString("t_type"));
+        LocalDate data = Formatador.conversorData(rs.getString("t_date"));
+        String cat = rs.getString("category");
+        LocalDate dateI = Formatador.conversorData(rs.getString("ini_date"));
+        LocalDate dateF = Formatador.conversorData(rs.getString("end_date"));
+        TransacaoMensal t = new TransacaoMensal(desc, val, data, isR, cat, dateI, dateF);
+        t.setId(id);
+        return t;
+    }
+
     public List<Transacao> findByData(LocalDate data) throws SQLException {
-        String sql = "SELECT * FROM transactions WHERE t_data = ? ORDER BY t_id DESC";
+        String sql = "SELECT * FROM transactions WHERE t_date = ? ORDER BY t_id DESC";
         List<Transacao> lista = new ArrayList<>();
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, Formatador.conversorString(data));

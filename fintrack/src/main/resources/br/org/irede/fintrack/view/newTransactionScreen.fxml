@@ -5,6 +5,7 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -12,7 +13,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" spacing="15.0" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.org.irede.fintrack.controller.newTransactionsScreen">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="400.0" spacing="15.0" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.org.irede.fintrack.controller.newTransactionsScreen">
    <children>
       <Label styleClass="title-header" text="Cadastrar Nova Transação" />
       <GridPane hgap="10.0" vgap="15.0">
@@ -26,6 +27,9 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
             <Label styleClass="card-title" text="Descrição" />
@@ -33,17 +37,49 @@
             <Label styleClass="card-title" text="Valor (R$)" GridPane.rowIndex="1" />
             <TextField fx:id="txtVal" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Label styleClass="card-title" text="Tipo" GridPane.rowIndex="2" />
-            <ComboBox fx:id="cbType" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <Label styleClass="card-title" text="Data" GridPane.rowIndex="4" />
-            <DatePicker fx:id="dpDate" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <Label styleClass="card-title" text="Recorrente" GridPane.rowIndex="4" />
+            <DatePicker fx:id="dpDate" GridPane.columnIndex="1" GridPane.rowIndex="5" />
             <ComboBox fx:id="cbCategory" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <Label text="Categoria" GridPane.rowIndex="3" />
+            <Label fx:id="lblDate" text="Data" GridPane.rowIndex="5" />
+            <DatePicker fx:id="dpIniDate" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <DatePicker fx:id="dpEndDate" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+            <Label fx:id="lblIniDate" text="Data de Início" GridPane.rowIndex="6" />
+            <Label fx:id="lblEndDate" text="Data de Término" GridPane.rowIndex="7" />
+            <HBox GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <children>
+                  <RadioButton fx:id="rdbReceita" mnemonicParsing="false" text="Receita">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                  </RadioButton>
+                  <RadioButton fx:id="rdbDespesa" mnemonicParsing="false" text="Despesa">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                  </RadioButton>
+               </children>
+            </HBox>
+            <HBox GridPane.columnIndex="1" GridPane.rowIndex="4">
+               <children>
+                  <RadioButton fx:id="rdbSim" mnemonicParsing="false" text="Sim">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                  </RadioButton>
+                  <RadioButton fx:id="rdbNao" mnemonicParsing="false" text="Não">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                  </RadioButton>
+               </children>
+            </HBox>
          </children>
       </GridPane>
       <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
          <children>
-            <Button mnemonicParsing="false" onMouseClicked="#switchToHome" styleClass="btn-secondary" text="Cancelar" />
-            <Button mnemonicParsing="false" onMouseClicked="#saveTransaction" styleClass="btn-primary" text="Adicionar" />
+            <Button fx:id="btnCancel" mnemonicParsing="false" onAction="#switchToHome" styleClass="btn-secondary" text="Cancelar" />
+            <Button fx:id="btnSave" mnemonicParsing="false" onAction="#saveTransaction" styleClass="btn-primary" text="Adicionar" />
          </children>
       </HBox>
    </children>
