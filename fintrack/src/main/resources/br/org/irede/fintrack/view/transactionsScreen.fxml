@@ -92,7 +92,7 @@
                                     </Label>
                                     <HBox prefHeight="100.0" prefWidth="644.0" GridPane.columnIndex="1">
                                        <children>
-                                          <TextField prefHeight="26.0" prefWidth="532.0">
+                                          <TextField fx:id="txtSearch" prefHeight="26.0" prefWidth="532.0">
                                              <HBox.margin>
                                                 <Insets left="10.0" top="15.0" />
                                              </HBox.margin>
@@ -117,7 +117,7 @@
                                     </ImageView>
                                  </graphic>
                               </Button>
-                              <Button mnemonicParsing="false" styleClass="b">
+                              <Button fx:id="btnEdit" mnemonicParsing="false" onAction="#editTransactionScreen" styleClass="b">
                                  <graphic>
                                     <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -129,7 +129,7 @@
                                     <Insets left="5.0" right="5.0" />
                                  </HBox.margin>
                               </Button>
-                              <Button mnemonicParsing="false">
+                              <Button fx:id="btnDelete" mnemonicParsing="false" onAction="#deleteTransactionScreen">
                                  <graphic>
                                     <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                                        <image>

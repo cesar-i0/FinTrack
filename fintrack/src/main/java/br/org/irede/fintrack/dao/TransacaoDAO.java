@@ -34,6 +34,7 @@ public class TransacaoDAO {
             stmt.setDouble(2, t.getValor());
             stmt.setString(3, (t.getReceita() ? "Receita" : "Despesa"));
             stmt.setString(4, (Formatador.conversorString(t.getDate())));
+            stmt.setString(5, t.getCategoria());
             stmt.executeUpdate();
 
             try (ResultSet rs = stmt.getGeneratedKeys()) {
@@ -67,33 +68,38 @@ public class TransacaoDAO {
     }
 
     // READ
-    public List<Transacao> findAll() throws SQLException {
-        String sql = "SELECT * FROM transactions t LEFT JOIN monthly_transactions m ON t.t_id = m.t_id ORDER BY t.t_id DESC";
+    public List<Transacao> findByPeriod(LocalDate ini, LocalDate end) throws SQLException {
+        String sql = "SELECT * FROM transactions t LEFT JOIN monthly_transactions m ON t.t_id = m.t_id WHERE t.t_date >= ? AND t.t_date <= ? ORDER BY t.t_date DESC";
         List<Transacao> lista_transacoes = new ArrayList<>();
-        try (PreparedStatement stmt = connection.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                lista_transacoes.add(instanciarTransacaoMesal(rs));
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, Formatador.conversorString(ini));
+            stmt.setString(2, Formatador.conversorString(end));
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    lista_transacoes.add(instanciarTransacaoMesal(rs));
+                }
             }
         }
         return lista_transacoes;
     }
 
-    public Transacao findById(Integer id) throws SQLException {
-        String sql = "SELECT * FROM transactions WHERE t_id = ?";
+    public List<Transacao> findByDescription(String d) throws SQLException {
+        String sql = "SELECT * FROM transactions t LEFT JOIN monthly_transactions m ON t.t_id = m.t_id WHERE description LIKE ? ";
+        List<Transacao> lista_transacoes = new ArrayList<>();
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, id);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return instanciarTransacao(rs);
+            stmt.setString(1, "%" + d + "%");
+            try(ResultSet rs = stmt.executeQuery()){
+                while(rs.next()) {
+                    lista_transacoes.add(instanciarTransacaoMesal(rs));
                 }
             }
         }
-        return null;
+        return lista_transacoes;
     }
 
     // UPDATE
     public void update(Transacao t) throws SQLException {
-        String sql = "UPDATE transactions SET description = ?, t_value = ?, t_type = ?, t_date = ?, category = ? WHERE id_t = ?";
+        String sql = "UPDATE transactions SET description = ?, t_value = ?, t_type = ?, t_date = ?, category = ? WHERE t_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, t.getDescricao());
             stmt.setDouble(2, t.getValor());
@@ -105,12 +111,46 @@ public class TransacaoDAO {
         }
     }
 
+    public void updateMensal(TransacaoMensal t) throws SQLException {
+        String sql = "UPDATE monthly_transactions SET ini_date = ?, end_date = ? WHERE t_id = ?";
+        try {
+            connection.setAutoCommit(false);
+            update(t);
+            try (PreparedStatement stmt = connection.prepareStatement(sql)){
+                stmt.setString(1, Formatador.conversorString(t.getDataInicial()));
+                stmt.setString(2, Formatador.conversorString(t.getDataFinal()));
+                stmt.setInt(3, t.getId());
+                stmt.executeUpdate();
+            }
+            connection.commit();
+        }catch (SQLException e){
+            connection.rollback();
+        }finally {
+            connection.setAutoCommit(true);
+        }
+    }
+
     // DELETE
-    public void delete(Long id) throws SQLException {
+    public void delete(Integer id) throws SQLException {
         String sql = "DELETE FROM transactions WHERE t_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setLong(1, id);
+            stmt.setInt(1, id);
             stmt.executeUpdate();
+        }
+    }
+
+    public void deleteMensal(Integer id) throws SQLException {
+        String sql = "DELETE FROM monthly_transactions WHERE t_id = ?";
+        connection.setAutoCommit(false);
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            delete(id);
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+            connection.commit();
+        }catch (SQLException e){
+            connection.rollback();
+        }finally {
+            connection.setAutoCommit(true);
         }
     }
 

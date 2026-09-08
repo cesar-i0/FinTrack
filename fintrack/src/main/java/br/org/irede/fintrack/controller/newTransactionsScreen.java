@@ -1,16 +1,15 @@
 package br.org.irede.fintrack.controller;
 import br.org.irede.fintrack.app.Main;
-import javafx.beans.binding.BooleanBinding;
+import br.org.irede.fintrack.model.TransacaoMensal;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
-
 import javafx.collections.FXCollections;
 import br.org.irede.fintrack.model.Transacao;
 import br.org.irede.fintrack.utils.Formatador;
+import javafx.stage.Stage;
 
 public class newTransactionsScreen extends FinTrack{
 
@@ -63,9 +62,12 @@ public class newTransactionsScreen extends FinTrack{
     @FXML
     private Label lblEndDate;
 
-
     @FXML
     public void initialize() {
+        config();
+    }
+
+    private void config(){
         grpType = new ToggleGroup();
         grpAgreement = new ToggleGroup();
         rdbReceita.setToggleGroup(grpType);
@@ -80,19 +82,24 @@ public class newTransactionsScreen extends FinTrack{
         dpEndDate.setValue(LocalDate.now());
     }
 
-
     @FXML
-    public void novaTransacao(){
+    private void novaTransacao(){
         try{
             String descricao = txtDesc.getText();
             Double valor = Formatador.conversorDouble(txtVal.getText());
             Boolean isR = grpType.getSelectedToggle() == rdbReceita;
-            LocalDate localDate = dpDate.getValue();
             String cat = cbCategory.getValue();
 
-
-            Transacao t = new Transacao(descricao, valor, localDate, isR, cat);
-            transacaoDAO.save(t);
+            if(grpType.getSelectedToggle() == rdbSim){
+                LocalDate date = dpDate.getValue();
+                Transacao t = new Transacao(descricao, valor, date, isR, cat);
+                transacaoDAO.save(t);
+            }else{
+                LocalDate ini = dpIniDate.getValue();
+                LocalDate end = dpEndDate.getValue();
+                TransacaoMensal t = new TransacaoMensal(descricao, valor, ini, isR, cat, ini, end);
+                transacaoDAO.saveMensal(t);
+            }
 
             Main.setRoot("homeScreen");
 
@@ -106,8 +113,14 @@ public class newTransactionsScreen extends FinTrack{
     }
 
     @FXML
-    public void saveTransaction() throws Exception {
+    private void saveTransaction() throws Exception {
         novaTransacao();
+    }
+
+    @Override
+    protected void switchToHome(){
+        Stage stage = (Stage) btnCancel.getScene().getWindow();
+        stage.close();
     }
 
 }

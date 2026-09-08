@@ -18,6 +18,9 @@ public class Formatador {
         }
     }
     public static String conversorString(LocalDate data){
+        if (data == null){
+            return null;
+        }
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         return data.format(formato);
     }

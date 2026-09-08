@@ -5,12 +5,14 @@ import br.org.irede.fintrack.model.Transacao;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.Label;
-
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -58,7 +60,20 @@ public class homeScreen extends FinTrack {
 
     @FXML
     private void switchToNewTransactions() throws IOException {
-        Main.setRoot("newTransactionScreen");
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("/br/org/irede/fintrack/view/newTransactionScreen.fxml"));
+        Parent root = loader.load();
+        Stage transactionModal = new Stage();
+        transactionModal.setScene(new Scene(root));
+        transactionModal.setTitle("Nova Transação");
+
+        Stage homeScreen = (Stage) btnTransactions.getScene().getWindow();
+        transactionModal.initOwner(homeScreen);
+        transactionModal.initModality(Modality.APPLICATION_MODAL);
+
+        transactionModal.setX(homeScreen.getX()/2);
+        transactionModal.setY(homeScreen.getY()/2);
+
+        transactionModal.showAndWait();
     }
 
     private void configTable(){

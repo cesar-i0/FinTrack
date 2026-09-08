@@ -25,9 +25,9 @@
                      </padding>
                      <children>
                         <Label styleClass="title-header" text="Período" />
-                        <DatePicker />
-                        <DatePicker />
-                        <Button alignment="TOP_RIGHT" mnemonicParsing="false" styleClass="btn-primary" text="Filtrar" />
+                        <DatePicker fx:id="dpIni" />
+                        <DatePicker fx:id="dpEnd" />
+                        <Button fx:id="btnFilter" alignment="TOP_RIGHT" mnemonicParsing="false" onAction="#resultReport" styleClass="btn-primary" text="Filtrar" />
                      </children>
                   </HBox>
                   <HBox prefHeight="100.0" prefWidth="200.0" spacing="20.0" VBox.vgrow="ALWAYS">
