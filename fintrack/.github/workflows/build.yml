@@ -2,7 +2,7 @@ name: Build FinTrack Installers
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches: [ "main", "changes" ]
     tags:
       - 'v*'
   workflow_dispatch: # Permite disparar a compilação manualmente no painel do GitHub
