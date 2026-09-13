@@ -1,21 +1,15 @@
 package br.org.irede.fintrack.controller;
-import br.org.irede.fintrack.dao.TransacaoDAO;
 import br.org.irede.fintrack.model.Transacao;
 import br.org.irede.fintrack.utils.AlertsUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

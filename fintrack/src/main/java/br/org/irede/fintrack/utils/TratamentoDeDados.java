@@ -7,7 +7,6 @@ import java.util.Scanner;
 public class TratamentoDeDados {
     Scanner s = new Scanner(System.in);
     String texto;
-    Formatador f = new Formatador();
     public String leituraString(){
         while (true){
             texto = s.nextLine();
@@ -22,7 +21,7 @@ public class TratamentoDeDados {
         LocalDate data;
         while (true){
             texto = leituraString();
-            data = f.conversorData(texto);
+            data = Formatador.conversorData(texto);
             if(data != null){
                 return data;
             }

@@ -1,6 +1,5 @@
 package br.org.irede.fintrack.controller;
 import br.org.irede.fintrack.app.Main;
-import br.org.irede.fintrack.dao.TransacaoDAO;
 import br.org.irede.fintrack.model.Transacao;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,8 +30,6 @@ public class homeScreen extends FinTrack {
 
     @FXML
     private Button btnAdd;
-
-    private final TransacaoDAO teste= new TransacaoDAO();
 
     @FXML
     public void initialize() {
