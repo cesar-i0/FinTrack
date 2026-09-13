@@ -1,0 +1,86 @@
+name: Build FinTrack Installers
+
+on:
+  push:
+    branches: [ "main", "master" ]
+    tags:
+      - 'v*'
+  workflow_dispatch: # Permite disparar a compilação manualmente no painel do GitHub
+
+jobs:
+  build:
+    name: Build em ${{ matrix.os }} (${{ matrix.pkg_type }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            pkg_type: deb
+            artifact_name: fintrack-linux-deb
+          - os: ubuntu-latest
+            pkg_type: rpm
+            artifact_name: fintrack-linux-rpm
+          - os: windows-latest
+            pkg_type: msi
+            artifact_name: fintrack-windows-msi
+
+    steps:
+      - name: 1. Baixar código do repositório
+        uses: actions/checkout@v4
+
+      - name: 2. Configurar JDK 26
+        uses: actions/setup-java@v4
+        with:
+          java-version: '26'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: 3. Instalar dependências de empacotamento no Linux
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y dpkg-dev rpm fakeroot
+
+      - name: 4. Compilar Fat JAR com Maven
+        run: mvn clean package
+
+      - name: 5. Preparar pasta limpa para o jpackage
+        shell: bash
+        run: |
+          mkdir -p target/installer_input
+          cp target/fintrack-1.0-SNAPSHOT.jar target/installer_input/
+
+      - name: 6. Gerar Instalador com jpackage (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          jpackage \
+            --type ${{ matrix.pkg_type }} \
+            --name "fintrack" \
+            --app-version "1.0.0" \
+            --input target/installer_input/ \
+            --main-jar fintrack-1.0-SNAPSHOT.jar \
+            --main-class br.org.irede.fintrack.app.AppLauncher \
+            --icon src/main/resources/br/org/irede/fintrack/images/icon.png \
+            --dest dist/
+
+      - name: 7. Gerar Instalador com jpackage (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: |
+          jpackage ^
+            --type ${{ matrix.pkg_type }} ^
+            --name "FinTrack" ^
+            --app-version "1.0.0" ^
+            --input target/installer_input/ ^
+            --main-jar fintrack-1.0-SNAPSHOT.jar ^
+            --main-class br.org.irede.fintrack.app.AppLauncher ^
+            --win-shortcut ^
+            --win-menu ^
+            --dest dist/
+
+      - name: 8. Salvar Artefato (Download dos Instaladores)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: dist/*

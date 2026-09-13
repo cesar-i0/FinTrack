@@ -46,6 +46,14 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <release>26</release>
+                </configuration>
+            </plugin>
             <!-- Plugin oficial do JavaFX para rodar o projeto pelo Maven -->
             <plugin>
                 <groupId>org.openjfx</groupId>
@@ -55,6 +63,27 @@
                     <!-- ATENÇÃO: Coloque aqui o caminho exato da sua classe que estende 'Application' -->
                     <mainClass>br.org.irede.fintrack.app.Main</mainClass>
                 </configuration>
+            </plugin>
+            <!-- Plugin Shade para o Uber-JAR -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.5.2</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>br.org.irede.fintrack.app.AppLauncher</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
