@@ -1,46 +1,56 @@
 package br.org.irede.fintrack.controller;
+import br.org.irede.fintrack.app.Main;
+import br.org.irede.fintrack.dao.TransacaoDAO;
 import br.org.irede.fintrack.model.Transacao;
-import java.util.ArrayList;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import java.io.IOException;
+import java.time.LocalDate;
 
-public class FinTrack {
-    private ArrayList<Transacao> trasacoes = new ArrayList<Transacao>();
 
-    public void adcionarTransacao(Transacao a){
-        trasacoes.add(a);
+public abstract class FinTrack {
+
+    protected final TransacaoDAO transacaoDAO = new TransacaoDAO();
+
+    @FXML
+    protected TableView<Transacao> tblTransactions;
+
+    @FXML
+    protected TableColumn<Transacao, LocalDate> colDate;
+
+    @FXML
+    protected TableColumn<Transacao, Double> colValue;
+
+    @FXML
+    protected TableColumn<Transacao, String> colDescription;
+
+    @FXML
+    protected TableColumn<Transacao, String> colCat;
+
+    @FXML
+    protected Button btnHome;
+
+    @FXML
+    protected Button btnTransactions;
+
+    @FXML
+    protected Button btnReport;
+
+    @FXML
+    protected void switchToHome() throws IOException {
+        Main.setRoot("homeScreen");
     }
 
-    public void remover(int index){
-        try{
-            trasacoes.remove(index);
-        }catch (IndexOutOfBoundsException e){
-            System.out.println("Erro: o índice informado não existe!");
-        }
+    @FXML
+    protected void switchToTransactions() throws IOException {
+        Main.setRoot("transactionsScreen");
     }
 
-    public Transacao buscar(int index){
-        Transacao a = null;
-        try{
-            a = trasacoes.get(index);
-        }catch (IndexOutOfBoundsException e){
-            System.out.println("Erro: transação não encontrada!");
-        }
-        return a;
-    }
-
-    public void listarTransacoes(){
-        int index = 0;
-        for(Transacao a : trasacoes){
-            System.out.println(index + " : " + a.toString());
-            index++;
-        }
-    }
-
-    public double calcularSaldoTotal(){
-        double aux = 0;
-        for(Transacao a : trasacoes){
-            aux += a.getValor();
-        }
-        return aux;
+    @FXML
+    protected void switchToReport() throws IOException {
+        Main.setRoot("reportScreen");
     }
 
 }

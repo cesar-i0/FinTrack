@@ -6,6 +6,9 @@ import java.time.format.DateTimeParseException;
 
 public class Formatador {
     public static LocalDate conversorData(String data){
+        if (data == null || data.isBlank()){
+            return null;
+        }
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         try{
             return LocalDate.parse(data,formato);
@@ -15,6 +18,9 @@ public class Formatador {
         }
     }
     public static String conversorString(LocalDate data){
+        if (data == null){
+            return null;
+        }
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         return data.format(formato);
     }
