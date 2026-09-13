@@ -2,7 +2,7 @@ name: Build FinTrack Installers
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "master", "changes" ]
     tags:
       - 'v*'
   workflow_dispatch:
@@ -26,7 +26,7 @@ jobs:
             artifact_name: fintrack-windows-msi
 
     steps:
-      - name: 1. Baixar código do repositório
+      - name: 1. Baixar codigo do repositorio
         uses: actions/checkout@v4
 
       - name: 2. Configurar JDK 26
@@ -37,19 +37,18 @@ jobs:
           cache: maven
           cache-dependency-path: fintrack/pom.xml
 
-      - name: 3. Instalar dependências de empacotamento no Linux
+      - name: 3. Instalar dependencias de empacotamento no Linux
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
           sudo apt-get install -y dpkg-dev rpm fakeroot
 
-      - name: 4. Compilar Fat JAR com Maven (na pasta fintrack)
+      - name: 4. Compilar aplicação e dependências com Maven
         run: mvn clean package -f fintrack/pom.xml
 
-      - name: 5. Preparar pasta limpa para o jpackage
+      - name: 5. Preparar entrada do jpackage
         shell: bash
         run: |
-          mkdir -p fintrack/target/installer_input
           cp fintrack/target/fintrack-1.0-SNAPSHOT.jar fintrack/target/installer_input/
 
       - name: 6. Gerar Instalador com jpackage (Linux)
@@ -76,6 +75,7 @@ jobs:
             --input fintrack/target/installer_input/ ^
             --main-jar fintrack-1.0-SNAPSHOT.jar ^
             --main-class br.org.irede.fintrack.app.AppLauncher ^
+            --java-options "-Dfile.encoding=UTF-8" ^
             --win-shortcut ^
             --win-menu ^
             --dest fintrack/dist/
