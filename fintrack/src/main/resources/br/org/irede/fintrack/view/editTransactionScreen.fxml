@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="400.0" spacing="15.0" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.org.irede.fintrack.controller.editTransactionScreen">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="400.0" spacing="15.0" styleClass="dialog-card" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.org.irede.fintrack.controller.editTransactionScreen">
    <children>
       <Label styleClass="title-header" text="Editar Transação" />
       <GridPane hgap="10.0" vgap="15.0">
@@ -29,7 +29,6 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
             <Label styleClass="card-title" text="Descrição" />
@@ -40,12 +39,10 @@
             <Label styleClass="card-title" text="Recorrente" GridPane.rowIndex="4" />
             <DatePicker fx:id="dpDate" GridPane.columnIndex="1" GridPane.rowIndex="5" />
             <ComboBox fx:id="cbCategory" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <Label text="Categoria" GridPane.rowIndex="3" />
-            <Label fx:id="lblDate" text="Data" GridPane.rowIndex="5" />
-            <DatePicker fx:id="dpIniDate" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-            <DatePicker fx:id="dpEndDate" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-            <Label fx:id="lblIniDate" text="Data de Início" GridPane.rowIndex="6" />
-            <Label fx:id="lblEndDate" text="Data de Término" GridPane.rowIndex="7" />
+            <Label styleClass="card-title" text="Categoria" GridPane.rowIndex="3" />
+            <Label fx:id="lblDate" styleClass="card-title" text="Data" GridPane.rowIndex="5" />
+            <DatePicker fx:id="dpEndDate" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <Label fx:id="lblEndDate" styleClass="card-title" text="Data de Término" GridPane.rowIndex="6" />
             <HBox GridPane.columnIndex="1" GridPane.rowIndex="2">
                <children>
                   <RadioButton fx:id="rdbReceita" mnemonicParsing="false" text="Receita">

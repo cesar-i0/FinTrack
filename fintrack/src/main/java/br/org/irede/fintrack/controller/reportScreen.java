@@ -1,6 +1,7 @@
 package br.org.irede.fintrack.controller;
 import br.org.irede.fintrack.dao.TransacaoDAO;
 import br.org.irede.fintrack.model.Transacao;
+import br.org.irede.fintrack.utils.AlertsUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -14,7 +15,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class reportScreen extends FinTrack{
 
@@ -31,21 +34,6 @@ public class reportScreen extends FinTrack{
     private Button btnFilter;
 
     @FXML
-    protected TableView<Transacao> tblTransactions;
-
-    @FXML
-    protected TableColumn<Transacao, LocalDate> colDate;
-
-    @FXML
-    protected TableColumn<Transacao, Double> colValue;
-
-    @FXML
-    protected TableColumn<Transacao, String> colDescription;
-
-    @FXML
-    protected TableColumn<Transacao, String> colType;
-
-    @FXML
     private void initialize() {
         configTable();
         loadGrafics();
@@ -54,19 +42,28 @@ public class reportScreen extends FinTrack{
     private void configTable(){
         colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
         colDescription.setCellValueFactory(new PropertyValueFactory<>("descricao"));
-        colType.setCellValueFactory(new PropertyValueFactory<>("categoria"));
+        colCat.setCellValueFactory(new PropertyValueFactory<>("categoria"));
         colValue.setCellValueFactory(new PropertyValueFactory<>("valor"));
     }
 
     @FXML
     private void resultReport() {
         LocalDate ini = dpIni.getValue();
+        if(ini == null){
+            AlertsUtils.emptyField("Não foi selecionado uma data inicial! Por favor, preencha o campo data final.");
+            return;
+        }
         LocalDate end = dpEnd.getValue();
+        if(end == null){
+             AlertsUtils.emptyField("Não foi selecionado uma data final! Por favor, preencha o campo da data final.");
+             return;
+        }
         try {
             List<Transacao> list_t = transacaoDAO.findByPeriod(ini, end);
             ObservableList<Transacao> observableList = FXCollections.observableArrayList(list_t);
             tblTransactions.setItems(observableList);
             tblTransactions.refresh();
+            loadGrafics();
         }catch (SQLException e){
             e.printStackTrace();
         }
@@ -74,22 +71,21 @@ public class reportScreen extends FinTrack{
 
     public  void loadGrafics() {
         try{
-            Double totalEntradas = transacaoDAO.getTotalPorTipo(true);
-            Double totalSaidas = transacaoDAO.getTotalPorTipo(false);
-            if (totalEntradas == null) totalEntradas = 0.0;
-            if (totalSaidas == null) totalSaidas = 0.0;
-            reportPieChart(totalEntradas, totalSaidas);
+            LocalDate ini = dpIni.getValue();
+            LocalDate end = dpEnd.getValue();
+            Map<String,Double> cat = transacaoDAO.getTotalByCategory(ini, end);
+            reportPieChart(cat);
         }catch (SQLException e){
             System.out.println("Erro ao carregar dados dos gráficos: " + e.getMessage());
         }
     }
-    private void reportPieChart(Double entradas, Double saidas) {
-        ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList(
-            new PieChart.Data("Entradas", entradas),
-            new PieChart.Data("Saídas", saidas)
-        );
+    private void reportPieChart(Map<String,Double> cat) {
+        ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList();
+        for(Map.Entry<String,Double> entry : cat.entrySet()){
+            pieData.add(new PieChart.Data(entry.getKey(), entry.getValue()));
+        }
         pieChart.setData(pieData);
-        pieChart.setTitle("Distribuição Financeira");
+        pieChart.setTitle("Relatório Financeiro");
     }
 
 

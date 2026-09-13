@@ -1,15 +1,14 @@
 package br.org.irede.fintrack.controller;
-
-import br.org.irede.fintrack.app.Main;
 import br.org.irede.fintrack.model.Transacao;
 import br.org.irede.fintrack.model.TransacaoMensal;
 import br.org.irede.fintrack.utils.Formatador;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import br.org.irede.fintrack.utils.AlertsUtils;
 
 public class editTransactionScreen extends FinTrack{
 
@@ -40,9 +39,6 @@ public class editTransactionScreen extends FinTrack{
 
     @FXML
     private DatePicker dpDate;
-
-    @FXML
-    private DatePicker dpIniDate;
 
     @FXML
     private DatePicker dpEndDate;
@@ -85,15 +81,18 @@ public class editTransactionScreen extends FinTrack{
     private void config(){
         try{
             grpType.selectToggle(t.getReceita() ? rdbReceita : rdbDespesa);
+            cbCategory.setItems(FXCollections.observableArrayList("Conta Essencial", "Seguro","Saúde","Assinatura","Lazer","Financeiro",
+                                                                "Empresarial","Fiscal","Salario","Trabalho/Freelance","Educacao","Venda",
+                                                                "Outras Saídas","Outras Entradas"));
             cbCategory.setValue(t.getCategoria());
             if(t instanceof TransacaoMensal){
                 TransacaoMensal tm = (TransacaoMensal) t;
                 grpAgreement.selectToggle(rdbSim);
                 txtDesc.setText(tm.getDescricao());
                 txtVal.setText(tm.getValor().toString());
-                dpIniDate.setValue(tm.getDataInicial());
-                dpEndDate.setValue(tm.getDataFinal() != null ? tm.getDataFinal() : LocalDate.now());
-                grpAgreement.selectToggle(((TransacaoMensal) t).getDataInicial() == null ? rdbSim : rdbNao);
+                dpDate.setValue(tm.getDate());
+                dpEndDate.setValue(tm.getDateEnd());
+                grpAgreement.selectToggle(tm.getDateEnd() == null ? rdbSim : rdbNao);
             }else{
                 grpAgreement.selectToggle(rdbNao);
                 txtDesc.setText(t.getDescricao());
@@ -109,19 +108,39 @@ public class editTransactionScreen extends FinTrack{
     private void updateTransaction(){
         try{
             String descricao = txtDesc.getText();
+            if(descricao.isEmpty()){
+                AlertsUtils.emptyField("O campo descrição está vazio! Por favor, preencha a descrição.");
+                return;
+            }
             Double valor = Formatador.conversorDouble(txtVal.getText());
+            if(valor == null || valor <= 0){
+                AlertsUtils.emptyField("O campo valor está vazio ou o valor é inválido! Por favor, preencha com um valor válido.");
+                return;
+            }
             Boolean isR = grpType.getSelectedToggle() == rdbReceita;
             String cat = cbCategory.getValue();
 
             if(grpAgreement.getSelectedToggle() == rdbNao){
                 LocalDate date = dpDate.getValue();
+                if(date == null){
+                    AlertsUtils.emptyField("O campo data está vazio! Por favor, preencha a data.");
+                    return;
+                }
                 Transacao atual = new Transacao(descricao, valor, date, isR, cat);
                 atual.setId(t.getId());
                 transacaoDAO.update(atual);
             }else{
-                LocalDate ini = dpIniDate.getValue();
+                LocalDate ini = dpDate.getValue();
+                if(ini == null){
+                    AlertsUtils.emptyField("Não foi selecionado uma data! Por favor, preencha o campo data.");
+                    return;
+                }
                 LocalDate end = dpEndDate.getValue();
-                TransacaoMensal atual = new TransacaoMensal(descricao, valor, ini, isR, cat, ini, end);
+                if(end == null){
+                    AlertsUtils.emptyField("Não foi selecionado uma data de término! Por favor, preencha o campo da data de término.");
+                    return;
+                }
+                TransacaoMensal atual = new TransacaoMensal(descricao, valor, ini, isR, cat, end);
                 atual.setId(t.getId());
                 transacaoDAO.updateMensal(atual);
             }

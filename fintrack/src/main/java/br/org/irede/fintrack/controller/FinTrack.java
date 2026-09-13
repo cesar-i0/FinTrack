@@ -28,7 +28,7 @@ public abstract class FinTrack {
     protected TableColumn<Transacao, String> colDescription;
 
     @FXML
-    protected TableColumn<Transacao, String> colType;
+    protected TableColumn<Transacao, String> colCat;
 
     @FXML
     protected Button btnHome;

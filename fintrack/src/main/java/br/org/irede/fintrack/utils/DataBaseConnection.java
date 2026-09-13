@@ -22,15 +22,8 @@ public class DataBaseConnection {
                     t_value DECIMAL(10,2) NOT NULL,
                     t_type TEXT NOT NULL,
                     t_date TEXT NOT NULL,
-                    category TEXT NOT NULL
-                )
-            """);
-            stmt.execute("""
-                CREATE TABLE IF NOT EXISTS monthly_transactions(
-                    t_id INTEGER PRIMARY KEY,
-                    ini_date TEXT NOT NULL,
-                    end_date TEXT NOT NULL,
-                    FOREIGN KEY (t_id) REFERENCES transactions(t_id)
+                    category TEXT NOT NULL,
+                    end_date TEXT
                 )
             """);
         }catch(SQLException e){

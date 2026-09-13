@@ -97,7 +97,7 @@ public class transactionsScreen extends FinTrack{
     private void configTable(){
         colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
         colDescription.setCellValueFactory(new PropertyValueFactory<>("descricao"));
-        colType.setCellValueFactory(new PropertyValueFactory<>("categoria"));
+        colCat.setCellValueFactory(new PropertyValueFactory<>("categoria"));
         colValue.setCellValueFactory(new PropertyValueFactory<>("valor"));
     }
 

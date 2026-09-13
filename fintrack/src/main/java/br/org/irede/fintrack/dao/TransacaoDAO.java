@@ -5,10 +5,12 @@ import br.org.irede.fintrack.utils.DataBaseConnection;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import br.org.irede.fintrack.utils.Formatador;
 
-public class TransacaoDAO {
+public class TransacaoDAO implements RepositorioGenerico<Transacao, Integer> {
 
     private final Connection connection;
 
@@ -25,7 +27,9 @@ public class TransacaoDAO {
     }
 
     // CREATE
+    @Override
     public void save(Transacao t) throws SQLException {
+        validarTransacao(t);
         String sql = "INSERT INTO transactions (description, t_value, t_type, t_date, category) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -45,31 +49,27 @@ public class TransacaoDAO {
         }
     }
     public void saveMensal(TransacaoMensal t) throws SQLException {
-        String sql = "INSERT INTO monthly_transactions (t_id, ini_date, end_date) VALUES (?, ?, ?) ";
-        connection.setAutoCommit(false);
+        validarTransacao(t);
+        String sql = "INSERT INTO transactions (description, t_value, t_type, t_date, category, end_date) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            save(t);
-            stmt.setInt(1, t.getId());
-            stmt.setString(2,Formatador.conversorString(t.getDataInicial()));
-            stmt.setString(3,Formatador.conversorString(t.getDataFinal()));
+            stmt.setString(1, t.getDescricao());
+            stmt.setDouble(2, t.getValor());
+            stmt.setString(3, (t.getReceita() ? "Receita" : "Despesa"));
+            stmt.setString(4, (Formatador.conversorString(t.getDate())));
+            stmt.setString(5, t.getCategoria());
+            stmt.setString(6, (Formatador.conversorString(t.getDateEnd())));
             stmt.executeUpdate();
             try (ResultSet rs = stmt.getGeneratedKeys()) {
                 if (rs.next()) {
                     t.setId(rs.getInt(1));
                 }
             }
-            connection.commit();
-        }catch (SQLException e){
-            connection.rollback();
-            throw e;
-        }finally {
-            connection.setAutoCommit(true);
         }
     }
 
     // READ
     public List<Transacao> findByPeriod(LocalDate ini, LocalDate end) throws SQLException {
-        String sql = "SELECT * FROM transactions t LEFT JOIN monthly_transactions m ON t.t_id = m.t_id WHERE t.t_date >= ? AND t.t_date <= ? ORDER BY t.t_date DESC";
+        String sql = "SELECT * FROM transactions WHERE t_date >= ? AND t_date <= ? ORDER BY t_date DESC";
         List<Transacao> lista_transacoes = new ArrayList<>();
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, Formatador.conversorString(ini));
@@ -84,7 +84,7 @@ public class TransacaoDAO {
     }
 
     public List<Transacao> findByDescription(String d) throws SQLException {
-        String sql = "SELECT * FROM transactions t LEFT JOIN monthly_transactions m ON t.t_id = m.t_id WHERE description LIKE ? ";
+        String sql = "SELECT * FROM transactions WHERE description LIKE ? ";
         List<Transacao> lista_transacoes = new ArrayList<>();
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, "%" + d + "%");
@@ -99,6 +99,7 @@ public class TransacaoDAO {
 
     // UPDATE
     public void update(Transacao t) throws SQLException {
+        validarTransacao(t);
         String sql = "UPDATE transactions SET description = ?, t_value = ?, t_type = ?, t_date = ?, category = ? WHERE t_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, t.getDescricao());
@@ -108,30 +109,34 @@ public class TransacaoDAO {
             stmt.setString(5, (t.getCategoria()));
             stmt.setInt(6, t.getId());
             stmt.executeUpdate();
+            if (!connection.getAutoCommit()) {
+                connection.commit();
+            }
         }
     }
 
     public void updateMensal(TransacaoMensal t) throws SQLException {
-        String sql = "UPDATE monthly_transactions SET ini_date = ?, end_date = ? WHERE t_id = ?";
-        try {
-            connection.setAutoCommit(false);
-            update(t);
-            try (PreparedStatement stmt = connection.prepareStatement(sql)){
-                stmt.setString(1, Formatador.conversorString(t.getDataInicial()));
-                stmt.setString(2, Formatador.conversorString(t.getDataFinal()));
-                stmt.setInt(3, t.getId());
-                stmt.executeUpdate();
+        validarTransacao(t);
+        String sql = "UPDATE transactions SET description = ?, t_value = ?, t_type = ?, t_date = ?, category = ?, end_date = ? WHERE t_id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)){
+            stmt.setString(1, t.getDescricao());
+            stmt.setDouble(2, t.getValor());
+            stmt.setString(3, (t.getReceita() ? "Receita" : "Despesa"));
+            stmt.setString(4, (Formatador.conversorString(t.getDate())));
+            stmt.setString(5, (t.getCategoria()));
+            stmt.setString(6, (Formatador.conversorString(t.getDateEnd())));
+            stmt.setInt(7, t.getId());
+            stmt.executeUpdate();
+            if (!connection.getAutoCommit()) {
+                connection.commit();
             }
-            connection.commit();
-        }catch (SQLException e){
-            connection.rollback();
-        }finally {
-            connection.setAutoCommit(true);
         }
     }
 
     // DELETE
+    @Override
     public void delete(Integer id) throws SQLException {
+        validarId(id);
         String sql = "DELETE FROM transactions WHERE t_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
@@ -139,23 +144,28 @@ public class TransacaoDAO {
         }
     }
 
-    public void deleteMensal(Integer id) throws SQLException {
-        String sql = "DELETE FROM monthly_transactions WHERE t_id = ?";
-        connection.setAutoCommit(false);
+    @Override
+    public Transacao findById(Integer id) throws SQLException {
+        validarId(id);
+        String sql = "SELECT * FROM transactions WHERE t_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            delete(id);
             stmt.setInt(1, id);
-            stmt.executeUpdate();
-            connection.commit();
-        }catch (SQLException e){
-            connection.rollback();
-        }finally {
-            connection.setAutoCommit(true);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    if (rs.getString("end_date") == null) {
+                        return instanciarTransacao(rs);
+                    }
+                    return instanciarTransacaoMesal(rs);
+                }
+            }
         }
+        return null;
     }
 
-
     public Double getTotalPorTipo(Boolean isReceita) throws SQLException {
+        if (isReceita == null) {
+            throw new IllegalArgumentException("O tipo da transação deve ser informado");
+        }
         String tipo = isReceita ? "Receita" : "Despesa";
         String sql = "SELECT SUM(t_value) FROM transactions WHERE t_type = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -167,6 +177,22 @@ public class TransacaoDAO {
             }
         }
         return 0.0;
+    }
+
+    public Double getSaldo() throws SQLException {
+        return getTotalPorTipo(true) - getTotalPorTipo(false);
+    }
+
+    private static void validarTransacao(Transacao transacao) {
+        if (transacao == null) {
+            throw new IllegalArgumentException("A transação não pode ser nula");
+        }
+    }
+
+    private static void validarId(Integer id) {
+        if (id == null) {
+            throw new IllegalArgumentException("O id da transação não pode ser nulo");
+        }
     }
 
     public Transacao instanciarTransacao(ResultSet rs) throws SQLException {
@@ -188,9 +214,8 @@ public class TransacaoDAO {
         Boolean isR = "Receita".equalsIgnoreCase(rs.getString("t_type"));
         LocalDate data = Formatador.conversorData(rs.getString("t_date"));
         String cat = rs.getString("category");
-        LocalDate dateI = Formatador.conversorData(rs.getString("ini_date"));
         LocalDate dateF = Formatador.conversorData(rs.getString("end_date"));
-        TransacaoMensal t = new TransacaoMensal(desc, val, data, isR, cat, dateI, dateF);
+        TransacaoMensal t = new TransacaoMensal(desc, val, data, isR, cat, dateF);
         t.setId(id);
         return t;
     }
@@ -207,6 +232,21 @@ public class TransacaoDAO {
             }
         }
         return lista;
+    }
+
+    public Map<String, Double> getTotalByCategory(LocalDate ini, LocalDate end) throws SQLException {
+        Map<String, Double> map = new HashMap<>();
+        String sql = "SELECT category, SUM(t_value) AS total FROM transactions WHERE t_date >= ? AND t_date <= ? GROUP BY category";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, Formatador.conversorString(ini));
+            stmt.setString(2, Formatador.conversorString(end));
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    map.put(rs.getString("category"), rs.getDouble("total"));
+                }
+            }
+        }
+        return map;
     }
 
 }
