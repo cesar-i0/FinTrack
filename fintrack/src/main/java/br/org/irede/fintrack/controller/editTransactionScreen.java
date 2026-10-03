@@ -142,6 +142,7 @@ public class editTransactionScreen extends FinTrack{
 
             if(grpAgreement.getSelectedToggle() == null){
                 AlertsUtils.showWarning("Não foi selecionado a recorrência da transação! Por favor, selecione uma opção da recorrência.");
+                return;
             }
 
             if(grpAgreement.getSelectedToggle() == rdbNao){

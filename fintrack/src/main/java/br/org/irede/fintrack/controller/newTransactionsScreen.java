@@ -115,6 +115,7 @@ public class newTransactionsScreen extends FinTrack{
 
             if(grpAgreement.getSelectedToggle() == null){
                 AlertsUtils.showWarning("Não foi selecionado a recorrência da transação! Por favor, selecione uma opção da recorrência.");
+                return;
             }
 
             if(grpAgreement.getSelectedToggle() == rdbNao){
@@ -142,15 +143,11 @@ public class newTransactionsScreen extends FinTrack{
                 transacaoDAO.saveMensal(t);
             }
 
-            Main.setRoot("homeScreen");
+            switchToHome();
 
         } catch (SQLException e) {
             System.err.println("Erro ao salvar no banco de dados: " + e.getMessage());
-        } catch (IOException e) {
-            System.err.println("Erro ao navegar para a tela principal: " + e.getMessage());
         }
-
-
     }
 
     @FXML

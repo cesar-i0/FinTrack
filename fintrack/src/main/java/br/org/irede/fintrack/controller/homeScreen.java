@@ -72,6 +72,9 @@ public class homeScreen extends FinTrack {
         transactionModal.setY(homeScreen.getY()/2);
 
         transactionModal.showAndWait();
+
+        refreshDashboard();
+
     }
 
     private void configTable(){

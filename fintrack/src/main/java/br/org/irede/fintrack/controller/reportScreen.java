@@ -53,6 +53,7 @@ public class reportScreen extends FinTrack{
              return;
         }else if(end.isBefore(ini)){
             AlertsUtils.showError("A data final selecionada não pode ser anterior a data de inicial! Por favor, selecione uma data válida!");
+            return;
         }
         try {
             List<Transacao> list_t = transacaoDAO.findByPeriod(ini, end);
