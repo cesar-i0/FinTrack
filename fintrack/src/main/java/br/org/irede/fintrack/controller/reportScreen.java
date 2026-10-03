@@ -44,13 +44,15 @@ public class reportScreen extends FinTrack{
     private void resultReport() {
         LocalDate ini = dpIni.getValue();
         if(ini == null){
-            AlertsUtils.emptyField("Não foi selecionado uma data inicial! Por favor, preencha o campo data final.");
+            AlertsUtils.showWarning("Não foi selecionado uma data inicial! Por favor, preencha o campo data final.");
             return;
         }
         LocalDate end = dpEnd.getValue();
         if(end == null){
-             AlertsUtils.emptyField("Não foi selecionado uma data final! Por favor, preencha o campo da data final.");
+             AlertsUtils.showWarning("Não foi selecionado uma data final! Por favor, preencha o campo da data final.");
              return;
+        }else if(end.isBefore(ini)){
+            AlertsUtils.showError("A data final selecionada não pode ser anterior a data de inicial! Por favor, selecione uma data válida!");
         }
         try {
             List<Transacao> list_t = transacaoDAO.findByPeriod(ini, end);

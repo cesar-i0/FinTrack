@@ -31,7 +31,6 @@ public class TransacaoDAO implements RepositorioGenerico<Transacao, Integer> {
     public void save(Transacao t) throws SQLException {
         validarTransacao(t);
         String sql = "INSERT INTO transactions (description, t_value, t_type, t_date, category) VALUES (?, ?, ?, ?, ?)";
-
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, t.getDescricao());

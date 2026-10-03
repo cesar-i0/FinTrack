@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import br.org.irede.fintrack.utils.AlertsUtils;
 
 public class transactionsScreen extends FinTrack{
 
@@ -63,6 +64,9 @@ public class transactionsScreen extends FinTrack{
             List<Transacao> lis_t = transacaoDAO.findByDescription(txtSearch.getText());
             ObservableList<Transacao> observableList = FXCollections.observableArrayList(lis_t);
             tblTransactions.setItems(observableList);
+            if(txtSearch.getText().isEmpty()){
+                AlertsUtils.showWarning("A barra de pesquisa está vazia! Por favor, preencha com o que deseja encontrar!");
+            }
             configTable();
         }catch (SQLException e){
             System.out.println(e.getMessage());
@@ -73,7 +77,10 @@ public class transactionsScreen extends FinTrack{
     private void editTransactionScreen(ActionEvent event) throws IOException {
         Transacao selecionada = tblTransactions.getSelectionModel().getSelectedItem();
         try {
-            switchToEdit(selecionada);
+            if(selecionada != null) {
+                switchToEdit(selecionada);
+                searchTransaction();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -83,8 +90,10 @@ public class transactionsScreen extends FinTrack{
     private void deleteTransactionScreen(ActionEvent event) throws IOException {
         Transacao selecionada = tblTransactions.getSelectionModel().getSelectedItem();
         try {
-            transacaoDAO.delete(selecionada.getId());
-
+            if(selecionada != null) {
+                transacaoDAO.delete(selecionada.getId());
+                searchTransaction();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

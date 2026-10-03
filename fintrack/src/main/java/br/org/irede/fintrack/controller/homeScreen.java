@@ -1,6 +1,7 @@
 package br.org.irede.fintrack.controller;
 import br.org.irede.fintrack.app.Main;
 import br.org.irede.fintrack.model.Transacao;
+import br.org.irede.fintrack.model.TransacaoMensal;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;

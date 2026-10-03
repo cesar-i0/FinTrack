@@ -26,6 +26,7 @@ public class DataBaseConnection {
                     end_date TEXT
                 )
             """);
+
         }catch(SQLException e){
             throw new RuntimeException("Error to iniciate at the database",e);
         }
