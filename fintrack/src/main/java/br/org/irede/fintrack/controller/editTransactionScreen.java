@@ -60,20 +60,23 @@ public class editTransactionScreen extends FinTrack{
 
     @FXML
     public void initialize() {
-        config();
+
     }
 
     private Transacao t;
 
     public void setObject(Transacao t) {
         this.t = t;
-        if(t != null) {
+        if(this.t != null) {
             config();
         }
     }
 
     @FXML
     private void config(){
+        if (t == null) {
+            return;
+        }
         try{
             grpType = new ToggleGroup();
             rdbReceita.setToggleGroup(grpType);
@@ -91,14 +94,13 @@ public class editTransactionScreen extends FinTrack{
                 dpEndDate.setVisible(newValue);
                 dpEndDate.setManaged(newValue);
             });
-
             grpType.selectToggle(t.getReceita() ? rdbReceita : rdbDespesa);
             cbCategory.setItems(FXCollections.observableArrayList("Conta Essencial", "Seguro","Saúde","Assinatura","Lazer","Financeiro",
                                                                 "Empresarial","Fiscal","Salario","Trabalho/Freelance","Educacao","Venda",
                                                                 "Outras Saídas","Outras Entradas"));
             cbCategory.setValue(t.getCategoria());
             if(t instanceof TransacaoMensal){
-                TransacaoMensal tm = (TransacaoMensal) t;
+                TransacaoMensal tm = (TransacaoMensal)t;
                 grpAgreement.selectToggle(rdbSim);
                 txtDesc.setText(tm.getDescricao());
                 txtVal.setText(tm.getValor().toString());
