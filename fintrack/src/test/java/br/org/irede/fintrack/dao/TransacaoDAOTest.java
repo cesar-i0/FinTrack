@@ -64,11 +64,11 @@ class TransacaoDAOTest {
         List<Transacao> porDescricao = dao.findByDescription("JUnit Transacao CRUD");
         assertEquals(1, porDescricao.size());
         assertEquals(125.50, porDescricao.get(0).getValor());
-        assertEquals("Despesa", porDescricao.get(0).getTipo());
+        assertEquals(false, porDescricao.get(0).getEhreceita());
 
         transacao.setDescricao("JUnit Transacao Atualizada");
         transacao.setValor(200.0);
-        transacao.setReceita(true);
+        transacao.setEhreceita(true);
         dao.update(transacao);
 
         List<Transacao> porData = dao.findByData(LocalDate.of(2026, 9, 12));
@@ -111,7 +111,7 @@ class TransacaoDAOTest {
                 LocalDate.of(2026, 9, 1), true, "JUnit Mensal",
                 LocalDate.of(2026, 12, 1));
 
-        dao.saveMensal(transacao);
+        dao.save(transacao);
 
         assertNotNull(transacao.getId());
         List<Transacao> resultado = dao.findByPeriod(

@@ -60,7 +60,22 @@ public class editTransactionScreen extends FinTrack{
 
     @FXML
     public void initialize() {
+        grpType = new ToggleGroup();
+        rdbReceita.setToggleGroup(grpType);
+        rdbDespesa.setToggleGroup(grpType);
 
+        grpAgreement = new ToggleGroup();
+        rdbSim.setToggleGroup(grpAgreement);
+        rdbNao.setToggleGroup(grpAgreement);
+
+        cbCategory.setItems(FXCollections.observableArrayList(Categorias));
+
+        rdbSim.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            lblEndDate.setVisible(newValue);
+            lblEndDate.setManaged(newValue);
+            dpEndDate.setVisible(newValue);
+            dpEndDate.setManaged(newValue);
+        });
     }
 
     private Transacao t;
@@ -74,45 +89,27 @@ public class editTransactionScreen extends FinTrack{
 
     @FXML
     private void config(){
-        if (t == null) {
-            return;
-        }
         try{
-            grpType = new ToggleGroup();
-            rdbReceita.setToggleGroup(grpType);
-            rdbDespesa.setToggleGroup(grpType);
-            grpAgreement = new ToggleGroup();
-            rdbSim.setToggleGroup(grpAgreement);
-            rdbNao.setToggleGroup(grpAgreement);
-
-            lblEndDate.setVisible(rdbSim.isSelected());
-            dpEndDate.setVisible(rdbSim.isSelected());
-
-            rdbSim.selectedProperty().addListener((observable, oldValue, newValue) -> {
-                lblEndDate.setVisible(newValue);
-                lblEndDate.setManaged(newValue);
-                dpEndDate.setVisible(newValue);
-                dpEndDate.setManaged(newValue);
-            });
-            grpType.selectToggle(t.getReceita() ? rdbReceita : rdbDespesa);
-            cbCategory.setItems(FXCollections.observableArrayList("Conta Essencial", "Seguro","Saúde","Assinatura","Lazer","Financeiro",
-                                                                "Empresarial","Fiscal","Salario","Trabalho/Freelance","Educacao","Venda",
-                                                                "Outras Saídas","Outras Entradas"));
+            grpType.selectToggle(t.getEhreceita() ? rdbReceita : rdbDespesa);
+            txtDesc.setText(t.getDescricao());
+            txtVal.setText(t.getValor().toString());
+            dpDate.setValue(t.getDate());
             cbCategory.setValue(t.getCategoria());
+
+            boolean iR = false;
             if(t instanceof TransacaoMensal){
                 TransacaoMensal tm = (TransacaoMensal)t;
-                grpAgreement.selectToggle(rdbSim);
-                txtDesc.setText(tm.getDescricao());
-                txtVal.setText(tm.getValor().toString());
-                dpDate.setValue(tm.getDate());
                 dpEndDate.setValue(tm.getDateEnd());
-                grpAgreement.selectToggle(tm.getDateEnd() == null ? rdbSim : rdbNao);
+                iR = (tm.getDateEnd() != null);
             }else{
-                grpAgreement.selectToggle(rdbNao);
-                txtDesc.setText(t.getDescricao());
-                txtVal.setText(t.getValor().toString());
-                dpDate.setValue(t.getDate());
+                dpEndDate.setValue(null);
             }
+            grpAgreement.selectToggle(iR ? rdbSim : rdbNao);
+            lblEndDate.setVisible(iR);
+            lblEndDate.setManaged(iR);
+            dpEndDate.setVisible(iR);
+            dpEndDate.setManaged(iR);
+
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
@@ -126,6 +123,7 @@ public class editTransactionScreen extends FinTrack{
                 AlertsUtils.showWarning("O campo descrição está vazio! Por favor, preencha a descrição.");
                 return;
             }
+
             Double valor = Formatador.conversorDouble(txtVal.getText());
             if(valor == null || valor <= 0){
                 AlertsUtils.showWarning("O campo valor está vazio ou o valor é inválido! Por favor, preencha com um valor válido.");
@@ -168,10 +166,11 @@ public class editTransactionScreen extends FinTrack{
                     return;
                 }else if(end.isBefore(ini)){
                     AlertsUtils.showError("A data de término selecionada não pode ser anterior a data de início! Por favor, selecione uma data válida!");
+                    return;
                 }
                 TransacaoMensal atual = new TransacaoMensal(descricao, valor, ini, isR, cat, end);
                 atual.setId(t.getId());
-                transacaoDAO.updateMensal(atual);
+                transacaoDAO.update(atual);
             }
             switchToTransactions();
         } catch (SQLException e) {

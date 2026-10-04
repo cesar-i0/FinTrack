@@ -142,11 +142,12 @@
                         <VBox prefHeight="300.0" prefWidth="400.0" HBox.hgrow="ALWAYS">
                            <children>
                               <Label styleClass="title-header" text="Atividades Recentes" />
-                              <TableView fx:id="tblTransactions" maxHeight="1.7976931348623157E308" prefHeight="300.0" prefWidth="400.0" VBox.vgrow="ALWAYS">
+                              <TableView fx:id="tblTransactions" maxHeight="1.7976931348623157E308" onMouseClicked="#editTransactionScreen" prefHeight="300.0" prefWidth="400.0" VBox.vgrow="ALWAYS">
                                 <columns>
                                   <TableColumn fx:id="colDate" prefWidth="75.0" text="Data" />
                                   <TableColumn fx:id="colDescription" prefWidth="75.0" text="Descrição" />
                                     <TableColumn fx:id="colValue" prefWidth="75.0" text="Valor" />
+                                    <TableColumn fx:id="colT" prefWidth="75.0" text="Tipo" />
                                     <TableColumn fx:id="colCat" prefWidth="75.0" text="Categoria" />
                                 </columns>
                                  <columnResizePolicy>

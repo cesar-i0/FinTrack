@@ -36,11 +36,11 @@ public class Transacao {
         return date;
     }
 
-    public void setReceita(Boolean ehReceita){
+    public void setEhreceita(Boolean ehReceita){
         this.ehReceita = ehReceita;
     }
 
-    public Boolean getReceita(){
+    public Boolean getEhreceita(){
         return ehReceita;
     }
 
@@ -58,13 +58,6 @@ public class Transacao {
 
     public Integer getId(){
         return idTransacao;
-    }
-
-    public String getTipo() {
-        if (this.ehReceita == null) {
-            return "";
-        }
-        return this.ehReceita ? "Receita" : "Despesa";
     }
 
     public void setCategoria(String categoria){

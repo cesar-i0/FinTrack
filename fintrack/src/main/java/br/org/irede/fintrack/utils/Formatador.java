@@ -5,11 +5,11 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 public class Formatador {
+    static DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     public static LocalDate conversorData(String data){
         if (data == null || data.isBlank()){
             return null;
         }
-        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         try{
             return LocalDate.parse(data,formato);
         }catch (DateTimeParseException e){
@@ -21,8 +21,26 @@ public class Formatador {
         if (data == null){
             return null;
         }
-        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         return data.format(formato);
+    }
+
+    public static LocalDate conversorDoBanco(String data){
+        if (data == null || data.isBlank()){
+            return null;
+        }
+        try{
+            return LocalDate.parse(data);
+        }catch (DateTimeParseException e){
+            System.out.println("Erro: data inválida no banco: " + data);
+            return null;
+        }
+    }
+
+    public static String conversorParaBanco(LocalDate data){
+        if (data == null){
+            return null;
+        }
+        return data.toString();
     }
 
     public static Double conversorDouble(String valor){

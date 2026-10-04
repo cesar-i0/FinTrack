@@ -67,36 +67,36 @@ public class newTransactionsScreen extends FinTrack{
 
     private void config(){
         grpType = new ToggleGroup();
-        grpAgreement = new ToggleGroup();
         rdbReceita.setToggleGroup(grpType);
         rdbDespesa.setToggleGroup(grpType);
+
+        grpAgreement = new ToggleGroup();
         rdbSim.setToggleGroup(grpAgreement);
+        rdbNao.setToggleGroup(grpAgreement);
+        grpAgreement.selectToggle(rdbNao);
+
+        cbCategory.setItems(FXCollections.observableArrayList(Categorias));
+        dpDate.setValue(LocalDate.now());
 
         lblEndDate.setVisible(rdbSim.isSelected());
         dpEndDate.setVisible(rdbSim.isSelected());
-
         rdbSim.selectedProperty().addListener((observable, oldValue, newValue) -> {
             lblEndDate.setVisible(newValue);
             lblEndDate.setManaged(newValue);
             dpEndDate.setVisible(newValue);
             dpEndDate.setManaged(newValue);
         });
-
-        rdbNao.setToggleGroup(grpAgreement);
-        cbCategory.setItems(FXCollections.observableArrayList("Conta Essencial", "Seguro","Saúde","Assinatura","Lazer","Financeiro",
-                                                                "Empresarial","Fiscal","Salario","Trabalho/Freelance","Educacao","Venda",
-                                                                "Outras Saídas","Outras Entradas"));
-        dpDate.setValue(LocalDate.now());
     }
 
     @FXML
     private void novaTransacao(){
         try{
             String descricao = txtDesc.getText();
-            if(descricao.isEmpty()){
+            if(descricao == null || descricao.isBlank()){
                 AlertsUtils.showWarning("O campo descrição está vazio! Por favor, preencha a descrição.");
                 return;
             }
+
             Double valor = Formatador.conversorDouble(txtVal.getText());
             if(valor == null || valor <= 0){
                 AlertsUtils.showWarning("O campo valor está vazio ou o valor é inválido! Por favor, preencha com um valor válido.");
@@ -138,9 +138,10 @@ public class newTransactionsScreen extends FinTrack{
                     return;
                 }else if(end.isBefore(ini)){
                     AlertsUtils.showError("A data de término selecionada não pode ser anterior a data de início! Por favor, selecione uma data válida!");
+                    return;
                 }
                 TransacaoMensal t = new TransacaoMensal(descricao, valor, ini, isR, cat, end);
-                transacaoDAO.saveMensal(t);
+                transacaoDAO.save(t);
             }
 
             switchToHome();

@@ -6,7 +6,7 @@ public class TransacaoMensal extends Transacao{
 
     private LocalDate dateEnd;
 
-    public TransacaoMensal(String descricao, double valor, LocalDate data, boolean ehReceita, String categoria, LocalDate dataEnd) {
+    public TransacaoMensal(String descricao, double valor, LocalDate data, Boolean ehReceita, String categoria, LocalDate dataEnd) {
         super(descricao,valor, data, ehReceita,categoria);
         this.dateEnd = dataEnd;
     }

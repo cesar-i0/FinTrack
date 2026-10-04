@@ -2,15 +2,21 @@ package br.org.irede.fintrack.controller;
 import br.org.irede.fintrack.app.Main;
 import br.org.irede.fintrack.model.Transacao;
 import br.org.irede.fintrack.model.TransacaoMensal;
+import br.org.irede.fintrack.utils.Formatador;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import java.io.IOException;
@@ -80,8 +86,47 @@ public class homeScreen extends FinTrack {
     private void configTable(){
         colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
         colDescription.setCellValueFactory(new PropertyValueFactory<>("descricao"));
-        colCat.setCellValueFactory(new PropertyValueFactory<>("categoria"));
+        colT.setCellValueFactory(new PropertyValueFactory<>("ehreceita"));
         colValue.setCellValueFactory(new PropertyValueFactory<>("valor"));
+        colCat.setCellValueFactory(new PropertyValueFactory<>("categoria"));
+
+        colDate.setCellFactory(column -> new TableCell<Transacao, LocalDate>() {
+            @Override
+            protected void updateItem(LocalDate item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else{
+                    setText(Formatador.conversorString(item));
+                }
+            }
+        });
+
+        colT.setCellFactory(column -> new TableCell<Transacao, Boolean>() {
+            @Override
+            protected void updateItem(Boolean item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else{
+                    setText(item ? "Receita" : "Despesa");
+                }
+            }
+        });
+
+    }
+
+    @FXML
+    private void editTransactionScreen(MouseEvent event) {
+        Transacao selecionada = tblTransactions.getSelectionModel().getSelectedItem();
+        try {
+            if(selecionada != null && event.getClickCount() == 2){
+                switchToEdit(selecionada);
+                switchToHome();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

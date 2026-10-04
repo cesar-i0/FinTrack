@@ -30,37 +30,35 @@ public class TransacaoDAO implements RepositorioGenerico<Transacao, Integer> {
     @Override
     public void save(Transacao t) throws SQLException {
         validarTransacao(t);
-        String sql = "INSERT INTO transactions (description, t_value, t_type, t_date, category) VALUES (?, ?, ?, ?, ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
-            stmt.setString(1, t.getDescricao());
-            stmt.setDouble(2, t.getValor());
-            stmt.setString(3, (t.getReceita() ? "Receita" : "Despesa"));
-            stmt.setString(4, (Formatador.conversorString(t.getDate())));
-            stmt.setString(5, t.getCategoria());
-            stmt.executeUpdate();
-
-            try (ResultSet rs = stmt.getGeneratedKeys()) {
-                if (rs.next()) {
-                    t.setId(rs.getInt(1));
+        if(t instanceof TransacaoMensal){
+            String sql = "INSERT INTO transactions (description, t_value, t_type, t_date, category, end_date) VALUES (?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                stmt.setString(1, t.getDescricao());
+                stmt.setDouble(2, t.getValor());
+                stmt.setString(3, (t.getEhreceita() ? "Receita" : "Despesa"));
+                stmt.setString(4, (Formatador.conversorParaBanco(t.getDate())));
+                stmt.setString(5, t.getCategoria());
+                stmt.setString(6, (Formatador.conversorParaBanco((((TransacaoMensal) t).getDateEnd()))));
+                stmt.executeUpdate();
+                try (ResultSet rs = stmt.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        t.setId(rs.getInt(1));
+                    }
                 }
             }
-        }
-    }
-    public void saveMensal(TransacaoMensal t) throws SQLException {
-        validarTransacao(t);
-        String sql = "INSERT INTO transactions (description, t_value, t_type, t_date, category, end_date) VALUES (?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setString(1, t.getDescricao());
-            stmt.setDouble(2, t.getValor());
-            stmt.setString(3, (t.getReceita() ? "Receita" : "Despesa"));
-            stmt.setString(4, (Formatador.conversorString(t.getDate())));
-            stmt.setString(5, t.getCategoria());
-            stmt.setString(6, (Formatador.conversorString(t.getDateEnd())));
-            stmt.executeUpdate();
-            try (ResultSet rs = stmt.getGeneratedKeys()) {
-                if (rs.next()) {
-                    t.setId(rs.getInt(1));
+        }else{
+            String sql = "INSERT INTO transactions (description, t_value, t_type, t_date, category) VALUES (?, ?, ?, ?, ?)";
+            try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                stmt.setString(1, t.getDescricao());
+                stmt.setDouble(2, t.getValor());
+                stmt.setString(3, (t.getEhreceita() ? "Receita" : "Despesa"));
+                stmt.setString(4, (Formatador.conversorParaBanco(t.getDate())));
+                stmt.setString(5, t.getCategoria());
+                stmt.executeUpdate();
+                try (ResultSet rs = stmt.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        t.setId(rs.getInt(1));
+                    }
                 }
             }
         }
@@ -71,8 +69,8 @@ public class TransacaoDAO implements RepositorioGenerico<Transacao, Integer> {
         String sql = "SELECT * FROM transactions WHERE t_date >= ? AND t_date <= ? ORDER BY t_date DESC";
         List<Transacao> lista_transacoes = new ArrayList<>();
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, Formatador.conversorString(ini));
-            stmt.setString(2, Formatador.conversorString(end));
+            stmt.setString(1, Formatador.conversorParaBanco(ini));
+            stmt.setString(2, Formatador.conversorParaBanco(end));
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     lista_transacoes.add(instanciarTransacaoMesal(rs));
@@ -96,34 +94,33 @@ public class TransacaoDAO implements RepositorioGenerico<Transacao, Integer> {
         return lista_transacoes;
     }
 
-    // UPDATE
-    public void update(Transacao t) throws SQLException {
-        validarTransacao(t);
-        String sql = "UPDATE transactions SET description = ?, t_value = ?, t_type = ?, t_date = ?, category = ? WHERE t_id = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, t.getDescricao());
-            stmt.setDouble(2, t.getValor());
-            stmt.setString(3, (t.getReceita() ? "Receita" : "Despesa"));
-            stmt.setString(4, (Formatador.conversorString(t.getDate())));
-            stmt.setString(5, (t.getCategoria()));
-            stmt.setInt(6, t.getId());
-            stmt.executeUpdate();
-            if (!connection.getAutoCommit()) {
-                connection.commit();
+    public  List<Transacao> findAll() throws SQLException {
+        String sql = "SELECT * FROM transactions LIMIT 25";
+        List<Transacao> lista_transacoes = new ArrayList<>();
+        try (PreparedStatement stmt = connection.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                lista_transacoes.add(instanciarTransacaoMesal(rs));
             }
         }
+        return lista_transacoes;
     }
 
-    public void updateMensal(TransacaoMensal t) throws SQLException {
+    // UPDATE
+    @Override
+    public void update(Transacao t) throws SQLException {
         validarTransacao(t);
         String sql = "UPDATE transactions SET description = ?, t_value = ?, t_type = ?, t_date = ?, category = ?, end_date = ? WHERE t_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)){
             stmt.setString(1, t.getDescricao());
             stmt.setDouble(2, t.getValor());
-            stmt.setString(3, (t.getReceita() ? "Receita" : "Despesa"));
-            stmt.setString(4, (Formatador.conversorString(t.getDate())));
+            stmt.setString(3, (t.getEhreceita() ? "Receita" : "Despesa"));
+            stmt.setString(4, (Formatador.conversorParaBanco(t.getDate())));
             stmt.setString(5, (t.getCategoria()));
-            stmt.setString(6, (Formatador.conversorString(t.getDateEnd())));
+            if(t instanceof TransacaoMensal){
+                stmt.setString(6, (Formatador.conversorParaBanco(((TransacaoMensal) t).getDateEnd())));
+            }else{
+                stmt.setString(6, null);
+            }
             stmt.setInt(7, t.getId());
             stmt.executeUpdate();
             if (!connection.getAutoCommit()) {
@@ -199,7 +196,7 @@ public class TransacaoDAO implements RepositorioGenerico<Transacao, Integer> {
         String desc =  rs.getString("description");
         Double val = rs.getDouble("t_value");
         Boolean isR = "Receita".equalsIgnoreCase(rs.getString("t_type"));
-        LocalDate data = Formatador.conversorData(rs.getString("t_date"));
+        LocalDate data = Formatador.conversorDoBanco(rs.getString("t_date"));
         String cat = rs.getString("category");
         Transacao t = new Transacao(desc, val, data, isR, cat);
         t.setId(id);
@@ -211,9 +208,9 @@ public class TransacaoDAO implements RepositorioGenerico<Transacao, Integer> {
         String desc =  rs.getString("description");
         Double val = rs.getDouble("t_value");
         Boolean isR = "Receita".equalsIgnoreCase(rs.getString("t_type"));
-        LocalDate data = Formatador.conversorData(rs.getString("t_date"));
+        LocalDate data = Formatador.conversorDoBanco(rs.getString("t_date"));
         String cat = rs.getString("category");
-        LocalDate dateF = Formatador.conversorData(rs.getString("end_date"));
+        LocalDate dateF = Formatador.conversorDoBanco(rs.getString("end_date"));
         TransacaoMensal t = new TransacaoMensal(desc, val, data, isR, cat, dateF);
         t.setId(id);
         return t;
@@ -223,10 +220,10 @@ public class TransacaoDAO implements RepositorioGenerico<Transacao, Integer> {
         String sql = "SELECT * FROM transactions WHERE t_date = ? ORDER BY t_id DESC";
         List<Transacao> lista = new ArrayList<>();
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, Formatador.conversorString(data));
+            stmt.setString(1, Formatador.conversorParaBanco(data));
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    lista.add(instanciarTransacao(rs));
+                    lista.add(instanciarTransacaoMesal(rs));
                 }
             }
         }
@@ -237,8 +234,8 @@ public class TransacaoDAO implements RepositorioGenerico<Transacao, Integer> {
         Map<String, Double> map = new HashMap<>();
         String sql = "SELECT category, SUM(t_value) AS total FROM transactions WHERE t_date >= ? AND t_date <= ? GROUP BY category";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, Formatador.conversorString(ini));
-            stmt.setString(2, Formatador.conversorString(end));
+            stmt.setString(1, Formatador.conversorParaBanco(ini));
+            stmt.setString(2, Formatador.conversorParaBanco(end));
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     map.put(rs.getString("category"), rs.getDouble("total"));
