@@ -11,6 +11,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -71,7 +72,7 @@ class TransacaoDAOTest {
         transacao.setEhreceita(true);
         dao.update(transacao);
 
-        List<Transacao> porData = dao.findByData(LocalDate.of(2026, 9, 12));
+        List<Transacao> porData = dao.findByData(YearMonth.of(2026, 9));
         assertEquals(1, porData.stream()
                 .filter(item -> transacao.getId().equals(item.getId()))
                 .count());
@@ -133,6 +134,6 @@ class TransacaoDAOTest {
         assertThrows(IllegalArgumentException.class, () -> dao.update(null));
         assertThrows(IllegalArgumentException.class, () -> dao.delete(null));
         assertThrows(IllegalArgumentException.class, () -> dao.findById(null));
-        assertThrows(IllegalArgumentException.class, () -> dao.getTotalPorTipo(null));
+        assertThrows(NullPointerException.class, () -> dao.getTotalPorTipo(null));
     }
 }

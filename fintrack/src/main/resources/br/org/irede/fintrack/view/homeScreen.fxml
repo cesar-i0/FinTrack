@@ -101,7 +101,7 @@
                                     <Image url="@../images/wallet-add.png" />
                                  </image>
                               </ImageView>
-                              <Label styleClass="card-title" text="Entradas Mensais" />
+                              <Label styleClass="card-title" text="Entradas" />
                               <Label fx:id="lblEntradas" styleClass="card-value" text="R$ 0,00" wrapText="true" />
                            </children>
                            <padding>
@@ -115,7 +115,7 @@
                                     <Image url="@../images/wallet-minus.png" />
                                  </image>
                               </ImageView>
-                              <Label styleClass="card-title" text="Saídas Mensais" />
+                              <Label styleClass="card-title" text="Saídas" />
                               <Label fx:id="lblSaidas" styleClass="card-value" text="R$ 0,00" wrapText="true" />
                            </children>
                            <padding>

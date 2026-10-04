@@ -22,6 +22,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 
 public class homeScreen extends FinTrack {
@@ -49,10 +50,12 @@ public class homeScreen extends FinTrack {
             Double totalEntradas = transacaoDAO.getTotalPorTipo(true);
             Double totalSaidas = transacaoDAO.getTotalPorTipo(false);
             Double SaldoAtual = totalEntradas - totalSaidas;
-            lblEntradas.setText(String.format("R$ %.2f", totalEntradas));
-            lblSaidas.setText(String.format("R$ %.2f",totalSaidas));
+            Double totalEntradasMes = transacaoDAO.getTotalMesEntradas(YearMonth.now());
+            Double totalSaidasMes = transacaoDAO.getTotalMesSaidas(YearMonth.now());
+            lblEntradas.setText(String.format("R$ %.2f", totalEntradasMes));
+            lblSaidas.setText(String.format("R$ %.2f",totalSaidasMes));
             lblSaldo.setText(String.format("R$ %.2f",SaldoAtual));
-            List<Transacao> transacoesHoje = transacaoDAO.findByData(LocalDate.now());
+            List<Transacao> transacoesHoje = transacaoDAO.findByData(YearMonth.of(LocalDate.now().getYear(), LocalDate.now().getMonth()));
             ObservableList<Transacao> observableList = FXCollections.observableArrayList(transacoesHoje);
             tblTransactions.setItems(observableList);
         }catch(SQLException e){

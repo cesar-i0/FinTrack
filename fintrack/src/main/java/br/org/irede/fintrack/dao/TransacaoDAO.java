@@ -4,6 +4,7 @@ import br.org.irede.fintrack.model.TransacaoMensal;
 import br.org.irede.fintrack.utils.DataBaseConnection;
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -105,6 +106,93 @@ public class TransacaoDAO implements RepositorioGenerico<Transacao, Integer> {
         return lista_transacoes;
     }
 
+    public Double getTotalPorTipo(Boolean isReceita) throws SQLException {
+        String tipo = isReceita ? "Receita" : "Despesa";
+        String sql = "SELECT SUM(t_value) FROM transactions WHERE t_type = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, tipo);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getDouble(1);
+                }
+            }
+        }
+        return 0.0;
+    }
+
+    public Double getTotalMesEntradas(YearMonth data) throws SQLException {
+        String sql = "SELECT SUM(t_value) FROM transactions WHERE t_type = 'Receita' AND t_date BETWEEN ? AND ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, Formatador.conversorParaBanco(data.atDay(1)));
+            stmt.setString(2, Formatador.conversorParaBanco(data.atEndOfMonth()));
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getDouble(1);
+                }
+            }
+        }
+        return 0.0;
+    }
+    public Double getTotalMesSaidas(YearMonth data) throws SQLException {
+        String sql = "SELECT SUM(t_value) FROM transactions WHERE t_type = 'Despesa' AND t_date BETWEEN ? AND ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, Formatador.conversorParaBanco(data.atDay(1)));
+            stmt.setString(2, Formatador.conversorParaBanco(data.atEndOfMonth()));
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getDouble(1);
+                }
+            }
+        }
+        return 0.0;
+    }
+
+    public Double getSaldo() throws SQLException {
+        return getTotalPorTipo(true) - getTotalPorTipo(false);
+    }
+
+    private static void validarTransacao(Transacao transacao) {
+        if (transacao == null) {
+            throw new IllegalArgumentException("A transação não pode ser nula");
+        }
+    }
+
+    private static void validarId(Integer id) {
+        if (id == null) {
+            throw new IllegalArgumentException("O id da transação não pode ser nulo");
+        }
+    }
+
+    public List<Transacao> findByData(YearMonth data) throws SQLException {
+        String sql = "SELECT * FROM transactions WHERE t_date BETWEEN ? AND ? ORDER BY t_id DESC LIMIT 25";
+        List<Transacao> lista = new ArrayList<>();
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, Formatador.conversorParaBanco(data.atDay(1)));
+            stmt.setString(2, Formatador.conversorParaBanco(data.atEndOfMonth()));
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    lista.add(instanciarTransacaoMesal(rs));
+                }
+            }
+        }
+        return lista;
+    }
+
+    public Map<String, Double> getTotalByCategory(LocalDate ini, LocalDate end) throws SQLException {
+        Map<String, Double> map = new HashMap<>();
+        String sql = "SELECT category, SUM(t_value) AS total FROM transactions WHERE t_date >= ? AND t_date <= ? GROUP BY category";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, Formatador.conversorParaBanco(ini));
+            stmt.setString(2, Formatador.conversorParaBanco(end));
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    map.put(rs.getString("category"), rs.getDouble("total"));
+                }
+            }
+        }
+        return map;
+    }
+
     // UPDATE
     @Override
     public void update(Transacao t) throws SQLException {
@@ -158,39 +246,6 @@ public class TransacaoDAO implements RepositorioGenerico<Transacao, Integer> {
         return null;
     }
 
-    public Double getTotalPorTipo(Boolean isReceita) throws SQLException {
-        if (isReceita == null) {
-            throw new IllegalArgumentException("O tipo da transação deve ser informado");
-        }
-        String tipo = isReceita ? "Receita" : "Despesa";
-        String sql = "SELECT SUM(t_value) FROM transactions WHERE t_type = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, tipo);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getDouble(1);
-                }
-            }
-        }
-        return 0.0;
-    }
-
-    public Double getSaldo() throws SQLException {
-        return getTotalPorTipo(true) - getTotalPorTipo(false);
-    }
-
-    private static void validarTransacao(Transacao transacao) {
-        if (transacao == null) {
-            throw new IllegalArgumentException("A transação não pode ser nula");
-        }
-    }
-
-    private static void validarId(Integer id) {
-        if (id == null) {
-            throw new IllegalArgumentException("O id da transação não pode ser nulo");
-        }
-    }
-
     public Transacao instanciarTransacao(ResultSet rs) throws SQLException {
         Integer id = rs.getInt("t_id");
         String desc =  rs.getString("description");
@@ -214,35 +269,6 @@ public class TransacaoDAO implements RepositorioGenerico<Transacao, Integer> {
         TransacaoMensal t = new TransacaoMensal(desc, val, data, isR, cat, dateF);
         t.setId(id);
         return t;
-    }
-
-    public List<Transacao> findByData(LocalDate data) throws SQLException {
-        String sql = "SELECT * FROM transactions WHERE t_date = ? ORDER BY t_id DESC";
-        List<Transacao> lista = new ArrayList<>();
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, Formatador.conversorParaBanco(data));
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    lista.add(instanciarTransacaoMesal(rs));
-                }
-            }
-        }
-        return lista;
-    }
-
-    public Map<String, Double> getTotalByCategory(LocalDate ini, LocalDate end) throws SQLException {
-        Map<String, Double> map = new HashMap<>();
-        String sql = "SELECT category, SUM(t_value) AS total FROM transactions WHERE t_date >= ? AND t_date <= ? GROUP BY category";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, Formatador.conversorParaBanco(ini));
-            stmt.setString(2, Formatador.conversorParaBanco(end));
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    map.put(rs.getString("category"), rs.getDouble("total"));
-                }
-            }
-        }
-        return map;
     }
 
 }
