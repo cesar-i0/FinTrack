@@ -1,5 +1,4 @@
 package br.org.irede.fintrack.model;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDate;

@@ -1,9 +1,7 @@
 package br.org.irede.fintrack.controller;
-import br.org.irede.fintrack.app.Main;
 import br.org.irede.fintrack.model.TransacaoMensal;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import javafx.collections.FXCollections;

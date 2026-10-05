@@ -1,5 +1,4 @@
 package br.org.irede.fintrack.utils;
-
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Connection;
