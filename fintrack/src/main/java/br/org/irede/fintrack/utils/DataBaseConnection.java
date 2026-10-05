@@ -1,5 +1,4 @@
 package br.org.irede.fintrack.utils;
-
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Connection;
@@ -26,6 +25,7 @@ public class DataBaseConnection {
                     end_date TEXT
                 )
             """);
+
         }catch(SQLException e){
             throw new RuntimeException("Error to iniciate at the database",e);
         }

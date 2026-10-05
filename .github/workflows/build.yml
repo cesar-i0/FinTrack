@@ -75,6 +75,7 @@ jobs:
             --input fintrack/target/installer_input/ ^
             --main-jar fintrack-1.0-SNAPSHOT.jar ^
             --main-class br.org.irede.fintrack.app.AppLauncher ^
+            --icon fintrack/src/main/resources/br/org/irede/fintrack/images/icon.ico ^
             --java-options "-Dfile.encoding=UTF-8" ^
             --win-shortcut ^
             --win-menu ^

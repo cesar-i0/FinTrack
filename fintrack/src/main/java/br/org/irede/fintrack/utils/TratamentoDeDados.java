@@ -1,5 +1,4 @@
 package br.org.irede.fintrack.utils;
-
 import java.time.LocalDate;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -133,5 +132,4 @@ public class TratamentoDeDados {
 
         }
     }
-
 }

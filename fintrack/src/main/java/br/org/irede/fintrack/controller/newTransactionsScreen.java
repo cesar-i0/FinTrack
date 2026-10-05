@@ -1,9 +1,7 @@
 package br.org.irede.fintrack.controller;
-import br.org.irede.fintrack.app.Main;
 import br.org.irede.fintrack.model.TransacaoMensal;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import javafx.collections.FXCollections;
@@ -67,72 +65,88 @@ public class newTransactionsScreen extends FinTrack{
 
     private void config(){
         grpType = new ToggleGroup();
-        grpAgreement = new ToggleGroup();
         rdbReceita.setToggleGroup(grpType);
         rdbDespesa.setToggleGroup(grpType);
+
+        grpAgreement = new ToggleGroup();
         rdbSim.setToggleGroup(grpAgreement);
         rdbNao.setToggleGroup(grpAgreement);
-        cbCategory.setItems(FXCollections.observableArrayList("Conta Essencial", "Seguro","Saúde","Assinatura","Lazer","Financeiro",
-                                                                "Empresarial","Fiscal","Salario","Trabalho/Freelance","Educacao","Venda",
-                                                                "Outras Saídas","Outras Entradas"));
+        grpAgreement.selectToggle(rdbNao);
+
+        cbCategory.setItems(FXCollections.observableArrayList(Categorias));
         dpDate.setValue(LocalDate.now());
+
+        lblEndDate.setVisible(rdbSim.isSelected());
+        dpEndDate.setVisible(rdbSim.isSelected());
+        rdbSim.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            lblEndDate.setVisible(newValue);
+            lblEndDate.setManaged(newValue);
+            dpEndDate.setVisible(newValue);
+            dpEndDate.setManaged(newValue);
+        });
     }
 
     @FXML
     private void novaTransacao(){
         try{
             String descricao = txtDesc.getText();
-            if(descricao.isEmpty()){
-                AlertsUtils.emptyField("O campo descrição está vazio! Por favor, preencha a descrição.");
+            if(descricao == null || descricao.isBlank()){
+                AlertsUtils.showWarning("O campo descrição está vazio! Por favor, preencha a descrição.");
                 return;
             }
+
             Double valor = Formatador.conversorDouble(txtVal.getText());
             if(valor == null || valor <= 0){
-                AlertsUtils.emptyField("O campo valor está vazio ou o valor é inválido! Por favor, preencha com um valor válido.");
+                AlertsUtils.showWarning("O campo valor está vazio ou o valor é inválido! Por favor, preencha com um valor válido.");
                 return;
             }
             Boolean isR = grpType.getSelectedToggle() == rdbReceita;
             if(grpType.getSelectedToggle() == null){
-                AlertsUtils.emptyField("Não foi seleciondo o tipo de transação! Por favor, selecione o tipo de transação.");
+                AlertsUtils.showWarning("Não foi seleciondo o tipo de transação! Por favor, selecione o tipo de transação.");
                 return;
             }
             String cat = cbCategory.getValue();
             if(cat == null){
-                AlertsUtils.emptyField("Não foi selecionado uma categoria! Por favor, preencha a categoria.");
+                AlertsUtils.showWarning("Não foi selecionado uma categoria! Por favor, preencha a categoria.");
                 return;
             }
 
-            if(grpType.getSelectedToggle() == rdbSim){
+            if(grpAgreement.getSelectedToggle() == null){
+                AlertsUtils.showWarning("Não foi selecionado a recorrência da transação! Por favor, selecione uma opção da recorrência.");
+                return;
+            }
+
+            if(grpAgreement.getSelectedToggle() == rdbNao){
                 LocalDate date = dpDate.getValue();
                 if(date == null){
-                    AlertsUtils.emptyField("Não foi selecionado uma data! Por favor, preencha o campo data.");
+                    AlertsUtils.showWarning("O campo data está vazio! Por favor, preencha a data.");
+                    return;
                 }
                 Transacao t = new Transacao(descricao, valor, date, isR, cat);
                 transacaoDAO.save(t);
-            }else{
+            }else if(grpAgreement.getSelectedToggle() == rdbSim){
                 LocalDate ini = dpDate.getValue();
-                if(ini == null){
-                    AlertsUtils.emptyField("Não foi selecionado uma data! Por favor, preencha o campo data.");
+               if(ini == null){
+                    AlertsUtils.showWarning("Não foi selecionado uma data! Por favor, preencha o campo data.");
                     return;
                 }
                 LocalDate end = dpEndDate.getValue();
                 if(end == null){
-                    AlertsUtils.emptyField("Não foi selecionado uma data de término! Por favor, preencha o campo da data de término.");
+                    AlertsUtils.showWarning("Não foi selecionado uma data de término! Por favor, preencha o campo da data de término.");
+                    return;
+                }else if(end.isBefore(ini)){
+                    AlertsUtils.showError("A data de término selecionada não pode ser anterior a data de início! Por favor, selecione uma data válida!");
                     return;
                 }
                 TransacaoMensal t = new TransacaoMensal(descricao, valor, ini, isR, cat, end);
-                transacaoDAO.saveMensal(t);
+                transacaoDAO.save(t);
             }
 
-            Main.setRoot("homeScreen");
+            switchToHome();
 
         } catch (SQLException e) {
             System.err.println("Erro ao salvar no banco de dados: " + e.getMessage());
-        } catch (IOException e) {
-            System.err.println("Erro ao navegar para a tela principal: " + e.getMessage());
         }
-
-
     }
 
     @FXML

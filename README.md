@@ -75,11 +75,28 @@ O banco contém a tabela `transactions`, com os campos:
 - `description`: descrição;
 - `t_value`: valor;
 - `t_type`: `Receita` ou `Despesa`;
-- `t_date`: data no formato `dd/MM/yyyy`;
+- `t_date`: data armazenada no SQLite no formato ISO `yyyy-MM-dd`, usado para permitir filtragens e ordenação corretas;
 - `category`: categoria;
 - `end_date`: data final de uma transação mensal.
 
+As datas são exibidas na interface no formato `dd/MM/yyyy`, mas permanecem armazenadas no banco no formato ISO `yyyy-MM-dd`.
+
 O arquivo `fintrack.db` contém os dados reais da aplicação. Para começar com um banco vazio, feche a aplicação e remova esse arquivo. Ele será recriado na próxima execução.
+
+### Popular o banco com dados de exemplo
+
+O arquivo [dadosTeste.sql](dadosTeste.sql) contém transações de exemplo para visualizar o dashboard, os filtros e os relatórios já preenchidos. Para utilizá-lo:
+
+1. Execute a aplicação uma vez para criar a tabela `transactions` e depois feche-a.
+2. Na pasta raiz `FinTrack`, execute:
+
+```bash
+sqlite3 fintrack/fintrack.db < dadosTeste.sql
+```
+
+3. Inicie a aplicação novamente com `mvn javafx:run` dentro da pasta `fintrack`.
+
+O comando acima requer o executável `sqlite3` instalado no sistema. O script usa o formato ISO `yyyy-MM-dd`, igual ao formato armazenado pela aplicação.
 
 ## Estrutura principal
 
@@ -87,7 +104,7 @@ O arquivo `fintrack.db` contém os dados reais da aplicação. Para começar com
 - `fintrack/src/main/java/br/org/irede/fintrack/controller/`: controllers das telas.
 - `fintrack/src/main/java/br/org/irede/fintrack/model/`: modelos `Transacao` e `TransacaoMensal`.
 - [TransacaoDAO.java](fintrack/src/main/java/br/org/irede/fintrack/dao/TransacaoDAO.java): operações de inserção, consulta, atualização, remoção, totais e saldo.
-- [RepositorioGenerico.java](fintrack/src/main/java/br/org/irede/fintrack/dao/RepositorioGenerico.java): contrato genérico para salvar, buscar por ID e remover entidades.
+- [RepositorioGenerico.java](fintrack/src/main/java/br/org/irede/fintrack/dao/RepositorioGenerico.java): contrato genérico para salvar, buscar por ID, atualizar e remover entidades.
 - `fintrack/src/main/resources/br/org/irede/fintrack/view/`: telas FXML.
 - `fintrack/src/main/resources/br/org/irede/fintrack/styles/`: estilos CSS.
 

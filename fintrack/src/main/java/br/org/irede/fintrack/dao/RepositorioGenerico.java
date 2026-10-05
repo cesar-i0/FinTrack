@@ -8,4 +8,6 @@ public interface RepositorioGenerico<T, ID> {
     T findById(ID id) throws SQLException;
 
     void delete(ID id) throws SQLException;
+
+    void update(T entidade) throws SQLException;
 }

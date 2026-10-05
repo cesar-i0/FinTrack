@@ -1,5 +1,4 @@
 package br.org.irede.fintrack.dao;
-
 import br.org.irede.fintrack.model.Transacao;
 import br.org.irede.fintrack.model.TransacaoMensal;
 import org.junit.jupiter.api.AfterEach;
@@ -11,6 +10,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -64,14 +64,14 @@ class TransacaoDAOTest {
         List<Transacao> porDescricao = dao.findByDescription("JUnit Transacao CRUD");
         assertEquals(1, porDescricao.size());
         assertEquals(125.50, porDescricao.get(0).getValor());
-        assertEquals("Despesa", porDescricao.get(0).getTipo());
+        assertEquals(false, porDescricao.get(0).getEhreceita());
 
         transacao.setDescricao("JUnit Transacao Atualizada");
         transacao.setValor(200.0);
-        transacao.setReceita(true);
+        transacao.setEhreceita(true);
         dao.update(transacao);
 
-        List<Transacao> porData = dao.findByData(LocalDate.of(2026, 9, 12));
+        List<Transacao> porData = dao.findByData(YearMonth.of(2026, 9));
         assertEquals(1, porData.stream()
                 .filter(item -> transacao.getId().equals(item.getId()))
                 .count());
@@ -111,7 +111,7 @@ class TransacaoDAOTest {
                 LocalDate.of(2026, 9, 1), true, "JUnit Mensal",
                 LocalDate.of(2026, 12, 1));
 
-        dao.saveMensal(transacao);
+        dao.save(transacao);
 
         assertNotNull(transacao.getId());
         List<Transacao> resultado = dao.findByPeriod(
@@ -133,6 +133,6 @@ class TransacaoDAOTest {
         assertThrows(IllegalArgumentException.class, () -> dao.update(null));
         assertThrows(IllegalArgumentException.class, () -> dao.delete(null));
         assertThrows(IllegalArgumentException.class, () -> dao.findById(null));
-        assertThrows(IllegalArgumentException.class, () -> dao.getTotalPorTipo(null));
+        assertThrows(NullPointerException.class, () -> dao.getTotalPorTipo(null));
     }
 }

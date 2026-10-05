@@ -70,7 +70,7 @@
                   <Insets top="20.0" />
                </padding>
                <children>
-                  <Label styleClass="title-header" text="Bem-vindo de volta, Cliente!">
+                  <Label styleClass="title-header" text="Bem-vindo de volta!">
                      <padding>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
@@ -101,7 +101,7 @@
                                     <Image url="@../images/wallet-add.png" />
                                  </image>
                               </ImageView>
-                              <Label styleClass="card-title" text="Entradas Mensais" />
+                              <Label styleClass="card-title" text="Entradas" />
                               <Label fx:id="lblEntradas" styleClass="card-value" text="R$ 0,00" wrapText="true" />
                            </children>
                            <padding>
@@ -115,7 +115,7 @@
                                     <Image url="@../images/wallet-minus.png" />
                                  </image>
                               </ImageView>
-                              <Label styleClass="card-title" text="Saídas Mensais" />
+                              <Label styleClass="card-title" text="Saídas" />
                               <Label fx:id="lblSaidas" styleClass="card-value" text="R$ 0,00" wrapText="true" />
                            </children>
                            <padding>
@@ -142,11 +142,12 @@
                         <VBox prefHeight="300.0" prefWidth="400.0" HBox.hgrow="ALWAYS">
                            <children>
                               <Label styleClass="title-header" text="Atividades Recentes" />
-                              <TableView fx:id="tblTransactions" maxHeight="1.7976931348623157E308" prefHeight="300.0" prefWidth="400.0" VBox.vgrow="ALWAYS">
+                              <TableView fx:id="tblTransactions" maxHeight="1.7976931348623157E308" onMouseClicked="#editTransactionScreen" prefHeight="300.0" prefWidth="400.0" VBox.vgrow="ALWAYS">
                                 <columns>
                                   <TableColumn fx:id="colDate" prefWidth="75.0" text="Data" />
                                   <TableColumn fx:id="colDescription" prefWidth="75.0" text="Descrição" />
                                     <TableColumn fx:id="colValue" prefWidth="75.0" text="Valor" />
+                                    <TableColumn fx:id="colT" prefWidth="75.0" text="Tipo" />
                                     <TableColumn fx:id="colCat" prefWidth="75.0" text="Categoria" />
                                 </columns>
                                  <columnResizePolicy>

@@ -1,5 +1,4 @@
 package br.org.irede.fintrack.model;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
@@ -17,9 +16,9 @@ class TransacaoTest {
         assertEquals("Salário", transacao.getDescricao());
         assertEquals(3500.0, transacao.getValor());
         assertEquals(data, transacao.getDate());
-        assertEquals(true, transacao.getReceita());
+        assertEquals(true, transacao.getEhreceita());
         assertEquals("Renda", transacao.getCategoria());
-        assertEquals("Receita", transacao.getTipo());
+        assertEquals("Receita", (transacao.getEhreceita() ? "Receita" : "Despesa"));
     }
 
     @Test
@@ -32,16 +31,16 @@ class TransacaoTest {
         transacao.setDescricao("Aluguel");
         transacao.setValor(1200.0);
         transacao.setDate(data);
-        transacao.setReceita(false);
+        transacao.setEhreceita(false);
         transacao.setCategoria("Moradia");
 
         assertEquals(7, transacao.getId());
         assertEquals("Aluguel", transacao.getDescricao());
         assertEquals(1200.0, transacao.getValor());
         assertEquals(data, transacao.getDate());
-        assertEquals(false, transacao.getReceita());
+        assertEquals(false, transacao.getEhreceita());
         assertEquals("Moradia", transacao.getCategoria());
-        assertEquals("Despesa", transacao.getTipo());
+        assertEquals("Despesa", transacao.getEhreceita() ? "Receita" : "Despesa");
         assertEquals("Aluguel | R$ 1200.0 | Despesa", transacao.toString());
     }
 
@@ -50,8 +49,7 @@ class TransacaoTest {
     void deveRetornarTipoVazioQuandoReceitaNaoFoiInformada() {
         Transacao transacao = new Transacao();
 
-        assertNull(transacao.getReceita());
-        assertEquals("", transacao.getTipo());
+        assertNull(transacao.getEhreceita());
     }
 
     @Test

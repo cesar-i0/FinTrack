@@ -94,7 +94,7 @@
                                     </Label>
                                     <HBox prefHeight="100.0" prefWidth="644.0" GridPane.columnIndex="1">
                                        <children>
-                                          <TextField fx:id="txtSearch" prefHeight="26.0" prefWidth="532.0">
+                                          <TextField fx:id="txtSearch" prefHeight="26.0" prefWidth="532.0" promptText="Digite o nome da transação">
                                              <HBox.margin>
                                                 <Insets left="10.0" top="15.0" />
                                              </HBox.margin>
@@ -156,6 +156,7 @@
                                     <TableColumn fx:id="colDate" prefWidth="75.0" text="Data" />
                                     <TableColumn fx:id="colDescription" prefWidth="75.0" text="Descrição" />
                                     <TableColumn fx:id="colValue" prefWidth="75.0" text="Valor" />
+                                    <TableColumn fx:id="colT" prefWidth="75.0" text="Tipo" />
                                     <TableColumn fx:id="colCat" prefWidth="75.0" text="Categoria" />
                                  </columns>
                                  <columnResizePolicy>
